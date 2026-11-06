@@ -30,7 +30,7 @@
   <script src="https://unpkg.com/html5-qrcode"></script>
 
   <!-- Application CSS -->
-  <link rel="stylesheet" href="css/styles.css">
+  <link rel="stylesheet" href="styles.css">
 </head>
 <body>
   <!-- App Container -->
@@ -227,7 +227,7 @@
           </div>
           <div class="teacher-meta">
             <div class="teacher-name" id="sidebarTeacherName">លោកគ្រូ សុខ ចាន់ថា</div>
-            <div class="teacher-role">គ្រូបន្ទុកថ្នាក់ទី ៨ A</div>
+            <div class="teacher-role" id="sidebarTeacherRole">គ្រូបន្ទុកថ្នាក់ទី ៨ A</div>
           </div>
         </div>
       </div>
@@ -994,8 +994,7 @@
                     <option value="top1">ចំណាត់ថ្នាក់លេខ ១</option>
                     <option value="top2">ចំណាត់ថ្នាក់លេខ ២</option>
                     <option value="top3">ចំណាត់ថ្នាក់លេខ ៣</option>
-                    <option value="top4">ចំណាត់ថ្នាក់លេខ ៤</option>
-                    <option value="top5">ចំណាត់ថ្នាក់លេខ ៥</option>
+                    <option value="top5">សិស្សឆ្នើមទាំង ៥ (លេខ ១ ដល់ ៥)</option>
                     <option value="all">សិស្សទាំងអស់</option>
                   </select>
                 </div>
@@ -1037,7 +1036,7 @@
                 <div class="honor-podium-cards" id="honorPodiumCards"></div>
 
                 <div class="honor-table-wrap">
-                  <h4 class="section-badge-title" id="rptHonorTableTitle"><i class="fa-solid fa-medal"></i> តារាងចំណាត់ថ្នាក់សិស្សកិត្តិយសទាំង ៥ រូប (ចំណាត់ថ្នាក់ពីលេខ ១ ដល់លេខ ៥)</h4>
+                  <h4 class="section-badge-title"><i class="fa-solid fa-medal"></i> តារាងចំណាត់ថ្នាក់សិស្សឆ្នើម Top 10</h4>
                   <table class="official-table">
                     <thead>
                       <tr>
@@ -1487,7 +1486,7 @@
             </div>
 
             <div class="card-body border-top">
-              <h4 class="section-heading mb-3"><i class="fa-solid fa-chalkboard-user"></i> បញ្ជីរាយនាមគ្រូបង្រៀនតាមមុខវិជ្ជា (ថ្នាក់ទី ៨ A)</h4>
+              <h4 class="section-heading mb-3" id="teachersClassHeading"><i class="fa-solid fa-chalkboard-user"></i> បញ្ជីរាយនាមគ្រូបង្រៀនតាមមុខវិជ្ជា (ថ្នាក់ទី ៨ A)</h4>
               <div class="teachers-grid" id="teachersGrid"></div>
             </div>
           </div>
@@ -1636,13 +1635,47 @@
                   <p class="text-muted font-khmer">ស្តង់ដារអនុវិទ្យាល័យ៖ ៣ ជួរ x ៧ តុ x ២ កៅអី = ៤២ កៅអីអង្គុយ</p>
                 </div>
               </div>
-              <div class="action-buttons-wrap">
+              <div class="action-buttons-wrap d-flex flex-wrap gap-2">
+                <!-- Customizer / Edit Button -->
+                <button class="btn btn-warning btn-sm font-khmer font-bold" id="btnEditSeatingLayout" onclick="SeatingManager.openEditModal()" title="កែសម្រួលព័ត៌មានប្លង់តុ ឈ្មោះសាលា គ្រូ និងក្តារខៀន">
+                  <i class="fa-solid fa-pen-to-square"></i> កែសម្រួលប្លង់តុ
+                </button>
+
+                <!-- Layout Mode Selector -->
+                <select class="form-select form-select-sm" id="seatingLayoutSelect" style="width: auto;" onchange="SeatingManager.changeLayoutMode(this.value)">
+                  <option value="exam_3cols">📝 ប្លង់ ៣ ជួរ (3 Columns)</option>
+                  <option value="exam_4cols" selected>📝 ប្លង់ ៤ ជួរ (Snake 3D ស្តង់ដារ)</option>
+                  <option value="exam_5cols">📝 ប្លង់ ៥ ជួរ (5 Columns)</option>
+                  <option value="exam_6cols">📝 ប្លង់ ៦ ជួរ (6 Columns)</option>
+                  <option value="exam_7cols">📝 ប្លង់ ៧ ជួរ (7 Columns)</option>
+                  <option value="exam_8cols">📝 ប្លង់ ៨ ជួរ (8 Columns)</option>
+                  <option value="exam_9cols">📝 ប្លង់ ៩ ជួរ (9 Columns)</option>
+                  <option value="exam_10cols">📝 ប្លង់ ១០ ជួរ (10 Columns Grand Hall)</option>
+                  <option value="group_pods">👥 ប្លង់តុជា ៦ ក្រុម (Group Pods)</option>
+                  <option value="u_shape">⭕ ប្លង់រាងអក្សរ U (Horseshoe)</option>
+                </select>
+
+                <!-- Heatmap Overlay Selector -->
+                <select class="form-select form-select-sm" id="seatingHeatmapSelect" style="width: auto;" onchange="SeatingManager.setHeatmap(this.value)">
+                  <option value="none">🎨 ស្រទាប់ពណ៌៖ ធម្មតា</option>
+                  <option value="grades">📈 កម្តៅពិន្ទុ & និទ្ទេស (A-F)</option>
+                  <option value="attendance">⚠️ កម្តៅវត្តមាន (Absences)</option>
+                  <option value="stars">⭐ កម្តៅផ្កាយ & Level</option>
+                </select>
+
+                <!-- Smart AI Placement -->
                 <div class="dropdown-inline">
+                  <button class="btn btn-outline btn-sm" id="btnArrangeVision" onclick="SeatingManager.autoArrange('vision_height')" title="សិស្សពាក់វ៉ែនតា/កម្ពស់ទាបនៅជួរមុខ">
+                    <i class="fa-solid fa-glasses text-info"></i> តាមកម្ពស់ & ភ្នែក
+                  </button>
+                  <button class="btn btn-outline btn-sm" id="btnArrangeBuddy" onclick="SeatingManager.autoArrange('peer_tutoring')" title="ដាក់សិស្សពូកែជួយសិស្សខ្សោយ">
+                    <i class="fa-solid fa-handshake-angle text-success"></i> គូសិក្សា ពូកែ+ខ្សោយ
+                  </button>
                   <button class="btn btn-outline btn-sm" id="btnArrangeAlpha" title="រៀបតាមលំដាប់អក្ខរក្រម">
-                    <i class="fa-solid fa-arrow-down-a-z"></i> តាមអក្ខរក្រម
+                    <i class="fa-solid fa-arrow-down-a-z"></i> អក្ខរក្រម
                   </button>
                   <button class="btn btn-outline btn-sm" id="btnArrangeRank" title="រៀបតាមចំណាត់ថ្នាក់ពូកែ">
-                    <i class="fa-solid fa-award text-warning"></i> តាមចំណាត់ថ្នាក់
+                    <i class="fa-solid fa-award text-warning"></i> ចំណាត់ថ្នាក់
                   </button>
                   <button class="btn btn-outline btn-sm" id="btnArrangeGender" title="រៀបឆ្លាស់ប្រុស/ស្រី">
                     <i class="fa-solid fa-venus-mars text-accent"></i> ឆ្លាស់ប្រុស/ស្រី
@@ -1650,7 +1683,10 @@
                   <button class="btn btn-outline btn-sm" id="btnArrangeRandom" title="រៀបចៃដន្យ">
                     <i class="fa-solid fa-shuffle"></i> ចៃដន្យ
                   </button>
-                  <button class="btn btn-primary btn-sm" id="btnPrintSeating">
+                  <button class="btn btn-outline btn-sm" id="btnDeskLabels" onclick="SeatingManager.openDeskLabelsModal()" title="បង្កើតស្លាកលេខតុ & QR Code">
+                    <i class="fa-solid fa-tags text-primary"></i> ស្លាកលេខតុ & QR
+                  </button>
+                  <button class="btn btn-primary btn-sm" id="btnPrintSeating" onclick="SeatingManager.printSeatingPlan()">
                     <i class="fa-solid fa-print"></i> បោះពុម្ពប្លង់តុ
                   </button>
                 </div>
@@ -1837,7 +1873,7 @@
 
             <div class="card-body">
               <!-- Council Leadership Grid -->
-              <h4 class="font-khmer text-primary mb-3"><i class="fa-solid fa-sitemap"></i> គណៈកម្មការគ្រប់គ្រងថ្នាក់រៀន ថ្នាក់ទី ៨ A</h4>
+              <h4 class="font-khmer text-primary mb-3" id="councilClassHeading"><i class="fa-solid fa-sitemap"></i> គណៈកម្មការគ្រប់គ្រងថ្នាក់រៀន ថ្នាក់ទី ៨ A</h4>
               <div class="council-roles-grid mb-5" id="councilRolesGrid"></div>
 
               <!-- Study Clubs List -->
@@ -2727,6 +2763,38 @@
     </div>
   </div>
 
+  <!-- Modal 8.5: Printable Desk QR Name Labels -->
+  <div class="modal-overlay" id="deskLabelsModal">
+    <div class="modal-container modal-xl">
+      <div class="modal-header">
+        <h3 class="modal-title"><i class="fa-solid fa-tags text-primary"></i> ស្លាកលេខតុ & QR Code សម្រាប់បោះពុម្ពបិទលើតុពិត (Printable Desk Labels)</h3>
+        <button class="btn-icon modal-close-btn" onclick="closeModal('deskLabelsModal')"><i class="fa-solid fa-xmark"></i></button>
+      </div>
+      <div class="modal-body">
+        <div class="d-flex justify-content-between align-items-center mb-3 p-3 bg-light rounded flex-wrap gap-2">
+          <div class="font-khmer text-muted">
+            <i class="fa-solid fa-circle-info text-info"></i> សន្លឹកស្លាកឈ្មោះស្តង់ដារ អាចព្រីនលើក្រដាស A4 ឬក្រដាសស្ទីគ័រ Sticker សម្រាប់កាត់បិទលើតុសិស្ស។
+          </div>
+          <button class="btn btn-primary" onclick="SeatingManager.printDeskLabels()"><i class="fa-solid fa-print"></i> បោះពុម្ពស្លាកឈ្មោះ (Print Stickers)</button>
+        </div>
+        <div id="deskLabelsGridContainer" class="desk-labels-print-sheet"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal 8.6: Edit Seating Plan & Classroom Customizer -->
+  <div class="modal-overlay" id="editSeatingModal">
+    <div class="modal-container modal-lg">
+      <div class="modal-header">
+        <h3 class="modal-title"><i class="fa-solid fa-pen-to-square text-warning"></i> កែសម្រួលព័ត៌មានប្លង់តុ & បន្ទប់រៀន 3D</h3>
+        <button class="btn-icon modal-close-btn" onclick="closeModal('editSeatingModal')"><i class="fa-solid fa-xmark"></i></button>
+      </div>
+      <div class="modal-body" id="editSeatingModalBody">
+        <!-- Injected via SeatingManager.openEditModal() -->
+      </div>
+    </div>
+  </div>
+
   <!-- Modal 9: Add Question to Bank -->
   <div class="modal-overlay" id="addQuestionModal">
     <div class="modal-container modal-lg">
@@ -3370,35 +3438,31 @@
     </div>
   </div>
 
+  <!-- Custom Modern Confirmation Modal -->
+  <div class="modal-overlay confirm-modal-overlay" id="customConfirmModal">
+    <div class="modal-container confirm-modal-container">
+      <div class="confirm-modal-card">
+        <div class="confirm-icon-circle danger" id="customConfirmIconWrap">
+          <i class="fa-solid fa-triangle-exclamation" id="customConfirmIcon"></i>
+        </div>
+        <h3 class="confirm-title font-khmer" id="customConfirmTitle">បញ្ជាក់ការលុបទិន្នន័យ</h3>
+        <div class="confirm-message font-khmer" id="customConfirmMessage">តើអ្នកពិតជាចង់លុបទិន្នន័យនេះមែនទេ?</div>
+        <div class="confirm-actions">
+          <button type="button" class="btn btn-outline confirm-btn-cancel font-khmer" id="customConfirmCancelBtn">
+            <i class="fa-solid fa-xmark me-1"></i> បោះបង់
+          </button>
+          <button type="button" class="btn btn-danger confirm-btn-proceed font-khmer" id="customConfirmOkBtn">
+            <i class="fa-solid fa-trash-can me-1"></i> យល់ព្រមលុប
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
   <!-- Toast Notification Container -->
   <div class="toast-container" id="toastContainer"></div>
 
-  <!-- Scripts -->
-  <script src="js/data.js"></script>
-  <script src="js/storage.js"></script>
-  <script src="js/students.js"></script>
-  <script src="js/attendance.js"></script>
-  <script src="js/scanner.js"></script>
-  <script src="js/homework.js"></script>
-  <script src="js/grades.js"></script>
-  <script src="js/semester.js"></script>
-  <script src="js/reports.js"></script>
-  <script src="js/insights.js"></script>
-  <script src="js/telegram.js"></script>
-  <script src="js/timetable.js"></script>
-  <script src="js/discipline.js"></script>
-  <script src="js/seating.js"></script>
-  <script src="js/exams.js"></script>
-  <script src="js/textbooks.js"></script>
-  <script src="js/council.js"></script>
-  <script src="js/quiz.js"></script>
-  <script src="js/health.js"></script>
-  <script src="js/election.js"></script>
-  <script src="js/gamification.js"></script>
-  <script src="js/fund.js"></script>
-  <script src="js/logbook.js"></script>
-  <script src="js/resources.js"></script>
-  <script src="js/voice.js"></script>
-  <script src="js/app.js"></script>
+  <!-- Bundle Script -->
+  <script src="bundle.js"></script>
 </body>
 </html>
