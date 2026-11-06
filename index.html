@@ -1,0 +1,3404 @@
+<!DOCTYPE html>
+<html lang="km" data-theme="light">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ប្រព័ន្ធគ្រប់គ្រងថ្នាក់រៀន អនុវិទ្យាល័យ | Junior High School Management System</title>
+  <meta name="description" content="ប្រព័ន្ធគ្រប់គ្រងថ្នាក់រៀន និងលទ្ធផលសិក្សាសិស្ស អនុវិទ្យាល័យ ទំនើប និងមានប្រសិទ្ធភាពខ្ពស់">
+  
+  <!-- Google Fonts for Khmer & English -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Kantumruy+Pro:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400&family=Moul&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Siemreap&display=swap" rel="stylesheet">
+  
+  <!-- FontAwesome Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  
+  <!-- Chart.js -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  
+  <!-- SheetJS (xlsx) for Excel Export/Import -->
+  <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
+  
+  <!-- Canvas Confetti for celebrations -->
+  <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+
+  <!-- QRCode.js for generating dynamic QR codes -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+
+  <!-- HTML5 QR Code scanner for Camera QR check-in -->
+  <script src="https://unpkg.com/html5-qrcode"></script>
+
+  <!-- Application CSS -->
+  <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+  <!-- App Container -->
+  <div class="app-layout" id="appLayout">
+    
+    <!-- Sidebar -->
+    <aside class="sidebar" id="sidebar">
+      <div class="sidebar-header">
+        <div class="school-brand">
+          <div class="brand-logo-wrap">
+            <i class="fa-solid fa-graduation-cap brand-icon"></i>
+          </div>
+          <div class="brand-info">
+            <h1 class="school-name-kh" id="sidebarSchoolName">អនុវិទ្យាល័យ ហ៊ុន សែន</h1>
+            <span class="system-tag">ប្រព័ន្ធគ្រប់គ្រងថ្នាក់រៀន</span>
+          </div>
+        </div>
+        <button class="btn-icon sidebar-close-btn" id="sidebarCloseBtn" aria-label="បិទម៉ឺនុយ">
+          <i class="fa-solid fa-xmark"></i>
+        </button>
+      </div>
+
+      <div class="academic-badge-box">
+        <div class="academic-badge">
+          <i class="fa-regular fa-calendar-check"></i>
+          <span>ឆ្នាំសិក្សា៖ <strong id="sidebarAcademicYear">២០២៥-២០២៦</strong></span>
+        </div>
+        <div class="class-selector-mini">
+          <label for="globalClassSelect"><i class="fa-solid fa-chalkboard-user"></i> បន្ទុកថ្នាក់៖</label>
+          <select id="globalClassSelect" class="form-select-sm">
+            <option value="7A">ថ្នាក់ទី ៧ A</option>
+            <option value="7B">ថ្នាក់ទី ៧ B</option>
+            <option value="8A" selected>ថ្នាក់ទី ៨ A</option>
+            <option value="8B">ថ្នាក់ទី ៨ B</option>
+            <option value="9A">ថ្នាក់ទី ៩ A</option>
+            <option value="9B">ថ្នាក់ទី ៩ B</option>
+          </select>
+        </div>
+      </div>
+
+      <nav class="sidebar-nav">
+        <div class="nav-section-title">មឺនុយចម្បង</div>
+        <ul class="nav-list">
+          <li class="nav-item">
+            <a href="#dashboard" class="nav-link active" data-tab="dashboard" id="navDashboard">
+              <i class="fa-solid fa-chart-pie"></i>
+              <span>ផ្ទាំងទិដ្ឋភាពរួម</span>
+            </a>
+          </li>
+          <li class="nav-item">
+            <a href="#students" class="nav-link" data-tab="students" id="navStudents">
+              <i class="fa-solid fa-users"></i>
+              <span>បញ្ជីឈ្មោះសិស្ស</span>
+              <span class="nav-badge" id="studentCountBadge">42</span>
+            </a>
+          </li>
+          <li class="nav-item">
+            <a href="#attendance" class="nav-link" data-tab="attendance" id="navAttendance">
+              <i class="fa-solid fa-clipboard-user"></i>
+              <span>ស្រង់វត្តមានប្រចាំថ្ងៃ</span>
+            </a>
+          </li>
+          <li class="nav-item">
+            <a href="#scanner" class="nav-link" data-tab="scanner" id="navScanner">
+              <i class="fa-solid fa-qrcode text-warning"></i>
+              <span>ស្កេន QR វត្តមាន <small class="new-pill">ថ្មី</small></span>
+            </a>
+          </li>
+          <li class="nav-item">
+            <a href="#homework" class="nav-link" data-tab="homework" id="navHomework">
+              <i class="fa-solid fa-book-open-reader"></i>
+              <span>កិច្ចការផ្ទះ & លំហាត់ <small class="new-pill">ថ្មី</small></span>
+            </a>
+          </li>
+          <li class="nav-item">
+            <a href="#grades" class="nav-link" data-tab="grades" id="navGrades">
+              <i class="fa-solid fa-award"></i>
+              <span>បញ្ចូល & គណនាពិន្ទុ</span>
+            </a>
+          </li>
+          <li class="nav-item">
+            <a href="#semester" class="nav-link" data-tab="semester" id="navSemester">
+              <i class="fa-solid fa-graduation-cap"></i>
+              <span>សរុបឆមាស & ឡើងថ្នាក់ <small class="new-pill">ថ្មី</small></span>
+            </a>
+          </li>
+          <li class="nav-item">
+            <a href="#reports" class="nav-link" data-tab="reports" id="navReports">
+              <i class="fa-solid fa-file-invoice"></i>
+              <span>តារាងចំណាត់ថ្នាក់ & ប័ណ្ណ</span>
+            </a>
+          </li>
+          <li class="nav-item">
+            <a href="#insights" class="nav-link" data-tab="insights" id="navInsights">
+              <i class="fa-solid fa-brain text-accent"></i>
+              <span>វិភាគឆ្លាតវៃ <small class="new-pill">AI</small></span>
+            </a>
+          </li>
+          <li class="nav-item">
+            <a href="#seating" class="nav-link" data-tab="seating" id="navSeating">
+              <i class="fa-solid fa-chair text-primary"></i>
+              <span>ប្លង់តុអង្គុយសិស្ស <small class="new-pill">ថ្មី</small></span>
+            </a>
+          </li>
+          <li class="nav-item">
+            <a href="#exams" class="nav-link" data-tab="exams" id="navExams">
+              <i class="fa-solid fa-file-circle-question text-warning"></i>
+              <span>ធនាគារសំណួរ & វិញ្ញាសា <small class="new-pill">ថ្មី</small></span>
+            </a>
+          </li>
+          <li class="nav-item">
+            <a href="#textbooks" class="nav-link" data-tab="textbooks" id="navTextbooks">
+              <i class="fa-solid fa-book-bookmark text-success"></i>
+              <span>គ្រប់គ្រងសៀវភៅពុម្ព <small class="new-pill">ថ្មី</small></span>
+            </a>
+          </li>
+          <li class="nav-item">
+            <a href="#council" class="nav-link" data-tab="council" id="navCouncil">
+              <i class="fa-solid fa-users-gear text-info"></i>
+              <span>គណៈកម្មការ & ក្លឹប <small class="new-pill">ថ្មី</small></span>
+            </a>
+          </li>
+          <li class="nav-item">
+            <a href="#quiz" class="nav-link" data-tab="quiz" id="navQuiz">
+              <i class="fa-solid fa-gamepad text-warning"></i>
+              <span>Quiz អន្តរកម្ម <small class="new-pill">ថ្មី</small></span>
+            </a>
+          </li>
+          <li class="nav-item">
+            <a href="#health" class="nav-link" data-tab="health" id="navHealth">
+              <i class="fa-solid fa-heart-pulse text-danger"></i>
+              <span>សុខភាព & BMI <small class="new-pill">ថ្មី</small></span>
+            </a>
+          </li>
+          <li class="nav-item">
+            <a href="#election" class="nav-link" data-tab="election" id="navElection">
+              <i class="fa-solid fa-check-to-slot text-success"></i>
+              <span>បោះឆ្នោតប្រធានថ្នាក់ <small class="new-pill">ថ្មី</small></span>
+            </a>
+          </li>
+          <li class="nav-item">
+            <a href="#gamification" class="nav-link" data-tab="gamification" id="navGamification">
+              <i class="fa-solid fa-star text-warning"></i>
+              <span>ផ្កាយ & ផ្លាកសញ្ញា <small class="new-pill">ថ្មី</small></span>
+            </a>
+          </li>
+          <li class="nav-item">
+            <a href="#fund" class="nav-link" data-tab="fund" id="navFund">
+              <i class="fa-solid fa-sack-dollar text-success"></i>
+              <span>មូលនិធិថ្នាក់រៀន <small class="new-pill">ថ្មី</small></span>
+            </a>
+          </li>
+          <li class="nav-item">
+            <a href="#logbook" class="nav-link" data-tab="logbook" id="navLogbook">
+              <i class="fa-solid fa-book-journal-whills text-primary"></i>
+              <span>សៀវភៅកិច្ចតែងការ <small class="new-pill">ថ្មី</small></span>
+            </a>
+          </li>
+          <li class="nav-item">
+            <a href="#resources" class="nav-link" data-tab="resources" id="navResources">
+              <i class="fa-solid fa-folder-open text-info"></i>
+              <span>ឃ្លាំងឯកសារមេរៀន <small class="new-pill">ថ្មី</small></span>
+            </a>
+          </li>
+          <li class="nav-item">
+            <a href="#timetable" class="nav-link" data-tab="timetable" id="navTimetable">
+              <i class="fa-solid fa-calendar-days"></i>
+              <span>កាលវិភាគបង្រៀន</span>
+            </a>
+          </li>
+          <li class="nav-item">
+            <a href="#discipline" class="nav-link" data-tab="discipline" id="navDiscipline">
+              <i class="fa-solid fa-book-bookmark"></i>
+              <span>វិន័យ និងសកម្មភាព</span>
+            </a>
+          </li>
+        </ul>
+
+        <div class="nav-section-title">ប្រព័ន្ធ & ទិន្នន័យ</div>
+        <ul class="nav-list">
+          <li class="nav-item">
+            <a href="#settings" class="nav-link" data-tab="settings" id="navSettings">
+              <i class="fa-solid fa-sliders"></i>
+              <span>ការកំណត់សាលា</span>
+            </a>
+          </li>
+        </ul>
+      </nav>
+
+      <div class="sidebar-footer">
+        <div class="teacher-profile-card">
+          <div class="teacher-avatar">
+            <img src="https://api.dicebear.com/7.x/bottts/svg?seed=TeacherSok" alt="រូបលោកគ្រូ" id="teacherAvatarImg">
+          </div>
+          <div class="teacher-meta">
+            <div class="teacher-name" id="sidebarTeacherName">លោកគ្រូ សុខ ចាន់ថា</div>
+            <div class="teacher-role">គ្រូបន្ទុកថ្នាក់ទី ៨ A</div>
+          </div>
+        </div>
+      </div>
+    </aside>
+
+    <!-- Main Content Area -->
+    <main class="main-wrapper">
+      
+      <!-- Top Navbar -->
+      <header class="top-navbar">
+        <div class="navbar-left">
+          <button class="btn-icon toggle-sidebar-btn" id="toggleSidebarBtn" aria-label="បើកម៉ឺនុយ">
+            <i class="fa-solid fa-bars-staggered"></i>
+          </button>
+          <div class="page-title-wrap">
+            <h2 class="current-page-title" id="currentPageTitle">ផ្ទាំងទិដ្ឋភាពរួម (Dashboard)</h2>
+            <div class="current-breadcrumb" id="currentBreadcrumb">ទំព័រដើម / ផ្ទាំងទិដ្ឋភាពទូទៅនៃថ្នាក់រៀន</div>
+          </div>
+        </div>
+
+        <div class="navbar-right">
+          <!-- Quick Search -->
+          <div class="global-search-box">
+            <i class="fa-solid fa-magnifying-glass search-icon"></i>
+            <input type="text" id="globalQuickSearch" placeholder="ស្វែងរកសិស្ស (ឈ្មោះ, អត្តលេខ)..." autocomplete="off">
+            <div class="search-results-dropdown" id="searchResultsDropdown"></div>
+          </div>
+
+          <!-- Quick Actions Button Group -->
+          <div class="nav-actions">
+            <button class="btn btn-outline btn-sm" id="voiceCommandBtn" title="បញ្ជាសំឡេង AI & ស្រង់វត្តមាន">
+              <i class="fa-solid fa-microphone text-danger"></i> <span class="d-none-sm">បញ្ជាសំឡេង</span>
+            </button>
+            <button class="btn btn-outline btn-sm" id="quickScannerNavBtn" onclick="switchTab('scanner')" title="ស្កេន QR វត្តមាន">
+              <i class="fa-solid fa-qrcode text-warning"></i> <span class="d-none-sm">ស្កេន QR</span>
+            </button>
+            <button class="btn btn-outline btn-sm" id="btnOpenBulkTelegramModal" title="ផ្ញើ Telegram ស្វ័យប្រវត្ត">
+              <i class="fa-brands fa-telegram text-info"></i> <span class="d-none-sm">Auto Telegram</span>
+            </button>
+            <button class="btn btn-primary btn-sm" id="quickAttendanceBtn" title="ស្រង់វត្តមានថ្ងៃនេះ">
+              <i class="fa-solid fa-clipboard-check"></i> <span class="d-none-sm">ស្រង់វត្តមាន</span>
+            </button>
+            <button class="btn-icon theme-toggle-btn" id="themeToggleBtn" aria-label="ប្តូរពណ៌ងងឹត/ភ្លឺ" title="ប្តូររចនាបថ យប់/ថ្ងៃ">
+              <i class="fa-solid fa-moon"></i>
+            </button>
+          </div>
+        </div>
+      </header>
+
+      <!-- Content Container (Tabs) -->
+      <div class="content-container">
+
+        <!-- TAB 1: DASHBOARD -->
+        <section class="tab-content active" id="tab-dashboard">
+          <!-- Hero Banner -->
+          <div class="dashboard-hero-card">
+            <div class="hero-left">
+              <div class="welcome-badge"><i class="fa-solid fa-sparkles"></i> សូមស្វាគមន៍មកកាន់ប្រព័ន្ធគ្រប់គ្រងថ្នាក់រៀន</div>
+              <h2 class="hero-title" id="heroWelcomeText">សួស្តីលោកគ្រូ សុខ ចាន់ថា! 👋</h2>
+              <p class="hero-desc" id="heroClassDesc">របាយការណ៍បច្ចុប្បន្នភាព និងសកម្មភាពសិក្សារបស់សិស្សានុសិស្ស <strong>ថ្នាក់ទី ៨ A</strong> ប្រចាំថ្ងៃ</p>
+              
+              <div class="hero-date-row">
+                <span class="date-chip"><i class="fa-regular fa-calendar"></i> <span id="currentKhmerDate">ថ្ងៃព្រហស្បតិ៍ ៩ រោច ខែអស្សុជ ឆ្នាំរោង</span></span>
+                <span class="time-chip"><i class="fa-regular fa-clock"></i> <span id="currentLiveTime">--:--:--</span></span>
+              </div>
+            </div>
+            <div class="hero-right">
+              <div class="hero-stats-pill">
+                <div class="pill-item">
+                  <span class="pill-label">សិស្សសរុប</span>
+                  <span class="pill-value" id="heroTotalStudents">៤២ នាក់</span>
+                </div>
+                <div class="pill-divider"></div>
+                <div class="pill-item">
+                  <span class="pill-label">ស្រី</span>
+                  <span class="pill-value text-accent" id="heroFemaleStudents">២៣ នាក់</span>
+                </div>
+                <div class="pill-divider"></div>
+                <div class="pill-item">
+                  <span class="pill-label">វត្តមានថ្ងៃនេះ</span>
+                  <span class="pill-value text-success" id="heroAttendanceRate">៩៨%</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- KPI Cards Grid -->
+          <div class="kpi-grid">
+            <div class="kpi-card card-primary">
+              <div class="kpi-icon-box">
+                <i class="fa-solid fa-user-graduate"></i>
+              </div>
+              <div class="kpi-content">
+                <span class="kpi-title">សិស្សក្នុងថ្នាក់</span>
+                <div class="kpi-main-val">
+                  <h3 id="kpiTotalStudents">42</h3>
+                  <span class="kpi-sub" id="kpiGenderRatio">ប្រុស ១៩ / ស្រី ២៣</span>
+                </div>
+              </div>
+              <div class="kpi-footer">
+                <span class="badge badge-soft-primary"><i class="fa-solid fa-check"></i> កំពុងសិក្សាពេញលេញ</span>
+              </div>
+            </div>
+
+            <div class="kpi-card card-success">
+              <div class="kpi-icon-box">
+                <i class="fa-solid fa-calendar-check"></i>
+              </div>
+              <div class="kpi-content">
+                <span class="kpi-title">វត្តមានថ្ងៃនេះ</span>
+                <div class="kpi-main-val">
+                  <h3 id="kpiPresentCount">40 <span class="val-unit">នាក់</span></h3>
+                  <span class="kpi-sub text-danger" id="kpiAbsentCount">អវត្តមាន ២ (ច្បាប់ ១)</span>
+                </div>
+              </div>
+              <div class="kpi-footer">
+                <span class="badge badge-soft-success" id="kpiAttendanceRateBadge">អត្រាវត្តមាន ៩៥.២%</span>
+              </div>
+            </div>
+
+            <div class="kpi-card card-warning">
+              <div class="kpi-icon-box">
+                <i class="fa-solid fa-chart-line-up"></i>
+              </div>
+              <div class="kpi-content">
+                <span class="kpi-title">មធ្យមភាគថ្នាក់ (ខែចុងក្រោយ)</span>
+                <div class="kpi-main-val">
+                  <h3 id="kpiClassAverage">38.45 <span class="val-unit">/ 50</span></h3>
+                  <span class="kpi-sub text-success" id="kpiPassRate">អត្រាជាប់ ៩២.៨%</span>
+                </div>
+              </div>
+              <div class="kpi-footer">
+                <span class="badge badge-soft-warning"><i class="fa-solid fa-star"></i> និទ្ទេសរួម៖ ល្អបង្គួរ (C)</span>
+              </div>
+            </div>
+
+            <div class="kpi-card card-info">
+              <div class="kpi-icon-box">
+                <i class="fa-solid fa-medal"></i>
+              </div>
+              <div class="kpi-content">
+                <span class="kpi-title">សិស្សឆ្នើមលេខ ១</span>
+                <div class="kpi-main-val">
+                  <h4 id="kpiTopStudentName">សុខា មុនីរត្ន</h4>
+                  <span class="kpi-sub" id="kpiTopStudentScore">ពិន្ទុសរុប ៤៧.២០ (និទ្ទេស A)</span>
+                </div>
+              </div>
+              <div class="kpi-footer">
+                <span class="badge badge-soft-info"><i class="fa-solid fa-crown"></i> កិត្តិយសថ្នាក់</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Charts and Top Performers Row -->
+          <div class="dashboard-grid-2">
+            <!-- Left: Performance Chart -->
+            <div class="content-card">
+              <div class="card-header-flex">
+                <div class="header-title-box">
+                  <i class="fa-solid fa-chart-column text-primary"></i>
+                  <h3 class="card-title">លទ្ធផលសិក្សាមធ្យមភាគតាមមុខវិជ្ជា (អនុវិទ្យាល័យ)</h3>
+                </div>
+              </div>
+              <div class="card-body">
+                <div class="chart-container" style="position: relative; height: 280px;">
+                  <canvas id="subjectPerformanceChart"></canvas>
+                </div>
+              </div>
+            </div>
+
+            <!-- Right: Grade Distribution Pie & Attendance -->
+            <div class="content-card">
+              <div class="card-header-flex">
+                <div class="header-title-box">
+                  <i class="fa-solid fa-chart-pie text-accent"></i>
+                  <h3 class="card-title">ការបែងចែកនិទ្ទេសសិស្ស (A, B, C, D, E, F)</h3>
+                </div>
+              </div>
+              <div class="card-body">
+                <div class="chart-container" style="position: relative; height: 280px;">
+                  <canvas id="gradeDistributionChart"></canvas>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Bottom Row: Top 5 Outstanding Students & Quick Today Schedule -->
+          <div class="dashboard-grid-2 mt-4">
+            <!-- Top 5 Students List -->
+            <div class="content-card">
+              <div class="card-header-flex">
+                <div class="header-title-box">
+                  <i class="fa-solid fa-trophy text-warning"></i>
+                  <h3 class="card-title">តារាងកិត្តិយស សិស្សឆ្នើមទាំង ៥ រូប (Top 5)</h3>
+                </div>
+                <button class="btn btn-outline btn-xs" onclick="switchTab('reports')">មើលទាំងអស់ <i class="fa-solid fa-arrow-right"></i></button>
+              </div>
+              <div class="card-body p-0">
+                <div class="table-responsive">
+                  <table class="data-table">
+                    <thead>
+                      <tr>
+                        <th>ល.រ</th>
+                        <th>រូបថត & ឈ្មោះសិស្ស</th>
+                        <th>ភេទ</th>
+                        <th>មធ្យមភាគ</th>
+                        <th>និទ្ទេស</th>
+                        <th>ចំណាត់ថ្នាក់</th>
+                      </tr>
+                    </thead>
+                    <tbody id="dashboardTopStudentsTableBody">
+                      <!-- Rendered via JS -->
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            </div>
+
+            <!-- Today's Teaching Schedule -->
+            <div class="content-card">
+              <div class="card-header-flex">
+                <div class="header-title-box">
+                  <i class="fa-solid fa-clock-rotate-left text-info"></i>
+                  <h3 class="card-title">កាលវិភាគបង្រៀនថ្ងៃនេះ (<span id="dashboardTodayDayName">ថ្ងៃព្រហស្បតិ៍</span>)</h3>
+                </div>
+                <button class="btn btn-outline btn-xs" onclick="switchTab('timetable')">កាលវិភាគពេញ <i class="fa-solid fa-calendar"></i></button>
+              </div>
+              <div class="card-body">
+                <div class="today-schedule-timeline" id="dashboardTodayScheduleList">
+                  <!-- Rendered via JS -->
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- TAB 2: STUDENTS MANAGEMENT -->
+        <section class="tab-content" id="tab-students">
+          <div class="content-card">
+            <div class="card-header-flex flex-wrap gap-2">
+              <div class="header-title-box">
+                <i class="fa-solid fa-users text-primary"></i>
+                <div>
+                  <h3 class="card-title">បញ្ជីរាយនាមសិស្សានុសិស្ស</h3>
+                  <p class="card-subtitle" id="studentsListSubtitle">សរុប ៤២ នាក់ (ស្រី ២៣ នាក់)</p>
+                </div>
+              </div>
+              <div class="header-actions-flex">
+                <div class="search-input-wrap">
+                  <i class="fa-solid fa-magnifying-glass"></i>
+                  <input type="text" id="studentTableSearch" placeholder="ស្វែងរកតាមឈ្មោះ, អត្តលេខ...">
+                </div>
+                <select id="studentGenderFilter" class="form-select-sm">
+                  <option value="all">ភេទទាំងអស់</option>
+                  <option value="ស្រី">ស្រី (Female)</option>
+                  <option value="ប្រុស">ប្រុស (Male)</option>
+                </select>
+                <select id="studentStatusFilter" class="form-select-sm">
+                  <option value="all">ស្ថានភាពទាំងអស់</option>
+                  <option value="កំពុងរៀន">កំពុងរៀន</option>
+                  <option value="ផ្អាកការសិក្សា">ផ្អាកការសិក្សា</option>
+                  <option value="ផ្ទេរចេញ">ផ្ទេរចេញ</option>
+                </select>
+                <button class="btn btn-primary btn-sm" id="addNewStudentModalBtn">
+                  <i class="fa-solid fa-plus"></i> បន្ថែមសិស្សថ្មី
+                </button>
+                <button class="btn btn-success btn-sm" id="exportStudentsExcelBtn">
+                  <i class="fa-solid fa-file-excel"></i> នាំចេញ Excel
+                </button>
+                <button class="btn btn-outline btn-sm" id="printStudentListBtn">
+                  <i class="fa-solid fa-print"></i> បោះពុម្ព
+                </button>
+              </div>
+            </div>
+
+            <!-- Students Table -->
+            <div class="card-body p-0">
+              <div class="table-responsive">
+                <table class="data-table" id="studentsMainTable">
+                  <thead>
+                    <tr>
+                      <th style="width: 50px;">ល.រ</th>
+                      <th style="width: 95px;">អត្តលេខ</th>
+                      <th>រូបថត & ឈ្មោះសិស្ស (ខ្មែរ-ឡាតាំង)</th>
+                      <th style="width: 70px; text-align: center;">ភេទ</th>
+                      <th style="width: 105px;">ថ្ងៃកំណើត</th>
+                      <th>ទីកន្លែងកំណើត</th>
+                      <th>អាសយដ្ឋានបច្ចុប្បន្ន</th>
+                      <th>ព័ត៌មានឪពុកម្តាយ & មុខរបរ</th>
+                      <th>លេខទូរស័ព្ទ</th>
+                      <th style="width: 90px; text-align: center;">ស្ថានភាព</th>
+                      <th style="width: 140px; text-align: center;">សកម្មភាព</th>
+                    </tr>
+                  </thead>
+                  <tbody id="studentsTableBody">
+                    <!-- Rendered via JS -->
+                  </tbody>
+                </table>
+              </div>
+            </div>
+            
+            <div class="card-footer-flex">
+              <div class="table-info-text" id="studentTableInfoText">បង្ហាញ ១ ដល់ ៤២ នៃ ៤២ សិស្ស</div>
+            </div>
+          </div>
+        </section>
+
+        <!-- TAB 3: ATTENDANCE MANAGEMENT -->
+        <section class="tab-content" id="tab-attendance">
+          <div class="content-card">
+            <div class="card-header-flex flex-wrap gap-2">
+              <div class="header-title-box">
+                <i class="fa-solid fa-clipboard-user text-success"></i>
+                <div>
+                  <h3 class="card-title">ការស្រង់វត្តមានសិស្សប្រចាំថ្ងៃ</h3>
+                  <p class="card-subtitle">ជ្រើសរើសកាលបរិច្ឆេទដើម្បីកត់ត្រា ឬពិនិត្យវត្តមាន</p>
+                </div>
+              </div>
+
+              <div class="header-actions-flex">
+                <div class="date-picker-wrap">
+                  <label for="attendanceDatePicker"><i class="fa-regular fa-calendar"></i> កាលបរិច្ឆេទ៖</label>
+                  <input type="date" id="attendanceDatePicker" class="form-input-sm">
+                </div>
+                <div class="btn-group">
+                  <button class="btn btn-outline btn-sm" id="attendancePrevDayBtn"><i class="fa-solid fa-chevron-left"></i> ម្សិលមិញ</button>
+                  <button class="btn btn-outline btn-sm" id="attendanceTodayBtn">ថ្ងៃនេះ</button>
+                  <button class="btn btn-outline btn-sm" id="attendanceNextDayBtn">ថ្ងៃស្អែក <i class="fa-solid fa-chevron-right"></i></button>
+                </div>
+                <button class="btn btn-soft-success btn-sm" id="markAllPresentBtn">
+                  <i class="fa-solid fa-check-double"></i> វត្តមានទាំងអស់
+                </button>
+                <button class="btn btn-primary btn-sm" id="saveAttendanceBtn">
+                  <i class="fa-solid fa-floppy-disk"></i> រក្សាទុកវត្តមាន
+                </button>
+              </div>
+            </div>
+
+            <!-- Attendance Stats Bar -->
+            <div class="attendance-summary-bar">
+              <div class="att-stat-item stat-total">
+                <span class="att-label">សិស្សក្នុងបញ្ជី៖</span>
+                <span class="att-num" id="attStatTotal">42</span>
+              </div>
+              <div class="att-stat-item stat-present">
+                <span class="att-label">វត្តមាន (មក)៖</span>
+                <span class="att-num" id="attStatPresent">40</span>
+              </div>
+              <div class="att-stat-item stat-permission">
+                <span class="att-label">មានច្បាប់ (P)៖</span>
+                <span class="att-num" id="attStatPermission">1</span>
+              </div>
+              <div class="att-stat-item stat-absent">
+                <span class="att-label">ឥតច្បាប់ (A)៖</span>
+                <span class="att-num" id="attStatAbsent">1</span>
+              </div>
+              <div class="att-stat-item stat-late">
+                <span class="att-label">យឺត (L)៖</span>
+                <span class="att-num" id="attStatLate">0</span>
+              </div>
+            </div>
+
+            <!-- Attendance Table -->
+            <div class="card-body p-0">
+              <div class="table-responsive">
+                <table class="data-table" id="attendanceTable">
+                  <thead>
+                    <tr>
+                      <th style="width: 50px;">ល.រ</th>
+                      <th style="width: 90px;">អត្តលេខ</th>
+                      <th>ឈ្មោះសិស្ស</th>
+                      <th style="width: 60px;">ភេទ</th>
+                      <th style="width: 320px; text-align: center;">ស្ថានភាពវត្តមានថ្ងៃនេះ</th>
+                      <th>មូលហេតុ / ចំណាំ</th>
+                      <th style="width: 140px; text-align: center;">សរុបអវត្តមានខែនេះ</th>
+                    </tr>
+                  </thead>
+                  <tbody id="attendanceTableBody">
+                    <!-- Rendered via JS -->
+                  </tbody>
+                </table>
+              </div>
+            </div>
+
+            <div class="card-footer-flex">
+              <div>
+                <button class="btn btn-outline btn-sm" id="toggleMonthlyAttendanceModalBtn">
+                  <i class="fa-solid fa-table-cells"></i> មើលតារាងបូកសរុបវត្តមានប្រចាំខែ (Monthly Matrix)
+                </button>
+              </div>
+              <div>
+                <button class="btn btn-success btn-sm" id="exportAttendanceExcelBtn">
+                  <i class="fa-solid fa-file-excel"></i> នាំចេញវត្តមាន
+                </button>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- TAB: QR SCANNER ATTENDANCE (NEW FEATURE) -->
+        <section class="tab-content" id="tab-scanner">
+          <div class="scanner-layout-grid">
+            <div class="content-card">
+              <div class="card-header-flex">
+                <div class="header-title-box">
+                  <i class="fa-solid fa-camera text-warning"></i>
+                  <div>
+                    <h3 class="card-title">ម៉ាស៊ីនស្កេនកាតសិស្ស QR Code (Live Camera Scanner)</h3>
+                    <p class="card-subtitle">ស្កេនកាតសិស្សដើម្បីកត់ត្រាវត្តមានភ្លាមៗ និងមានសំឡេង Beep</p>
+                  </div>
+                </div>
+                <div class="header-actions-flex">
+                  <button class="btn btn-success btn-sm" id="startCameraScannerBtn">
+                    <i class="fa-solid fa-video"></i> បើកកាមេរ៉ាស្កេន
+                  </button>
+                  <button class="btn btn-danger btn-sm" id="stopCameraScannerBtn" style="display: none;">
+                    <i class="fa-solid fa-video-slash"></i> បិទកាមេរ៉ា
+                  </button>
+                </div>
+              </div>
+              <div class="card-body text-center">
+                <!-- QR Camera Viewport -->
+                <div class="qr-camera-viewport">
+                  <div id="qr-reader" class="qr-reader-box"></div>
+                  <div class="scanner-laser-line"></div>
+                </div>
+
+                <!-- Manual / Barcode input box -->
+                <div class="manual-scan-box mt-4">
+                  <label class="form-label font-bold"><i class="fa-solid fa-barcode"></i> ឬវាយបញ្ចូលអត្តលេខសិស្សដោយផ្ទាល់ (Barcode / ID)៖</label>
+                  <div class="input-group-flex">
+                    <input type="text" id="manualQrInput" class="form-input" placeholder="ឧ. STU-8A-001 ឬឈ្មោះសិស្ស...">
+                    <button type="button" class="btn btn-primary" id="manualQrSubmitBtn">
+                      <i class="fa-solid fa-check"></i> ស្រង់វត្តមាន
+                    </button>
+                  </div>
+                </div>
+
+                <!-- Quick Test ID Buttons -->
+                <div class="quick-test-badges mt-3">
+                  <span class="text-muted">សាកល្បងចុចស្កេនរហ័ស៖</span>
+                  <button class="quick-test-id-btn" data-id="STU-8A-001">STU-8A-001 (សុខា មុនីរត្ន)</button>
+                  <button class="quick-test-id-btn" data-id="STU-8A-002">STU-8A-002 (ចាន់ សុភ័ក្ត្រ)</button>
+                  <button class="quick-test-id-btn" data-id="STU-8A-003">STU-8A-003 (ហេង ស្រីនិក)</button>
+                </div>
+              </div>
+            </div>
+
+            <!-- Right: Real-time Scan Result Card & Recent Check-in Feed -->
+            <div class="content-card">
+              <div class="card-header-flex">
+                <div class="header-title-box">
+                  <i class="fa-solid fa-clock-rotate-left text-success"></i>
+                  <h3 class="card-title">លទ្ធផលស្កេន & បញ្ជីសិស្សទើបបានស្កេនវត្តមាន</h3>
+                </div>
+              </div>
+              <div class="card-body">
+                <!-- Scan Result Box (Active Flash) -->
+                <div id="scannerResultCard" style="display: none; margin-bottom: 20px;"></div>
+
+                <h4 class="section-badge-title mb-2"><i class="fa-solid fa-list-check"></i> បញ្ជីសិស្សស្កេនថ្មីៗ (Recent Scans)</h4>
+                <div class="recent-scans-list" id="recentScansList">
+                  <div class="text-muted text-center p-3">មិនទាន់មានការស្កេននៅឡើយទេ</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- TAB: HOMEWORK & ASSIGNMENTS (NEW FEATURE) -->
+        <section class="tab-content" id="tab-homework">
+          <div class="content-card">
+            <div class="card-header-flex flex-wrap gap-2">
+              <div class="header-title-box">
+                <i class="fa-solid fa-book-open-reader text-primary"></i>
+                <div>
+                  <h3 class="card-title">ប្រព័ន្ធដាក់កិច្ចការផ្ទះ និងតាមដានការប្រគល់លំហាត់</h3>
+                  <p class="card-subtitle">ដាក់កិច្ចការផ្ទះតាមមុខវិជ្ជា តាមដានសិស្សប្រគល់ និងដាក់ពិន្ទុ</p>
+                </div>
+              </div>
+              <div class="header-actions-flex">
+                <button class="btn btn-primary btn-sm" id="openAddHomeworkModalBtn">
+                  <i class="fa-solid fa-plus"></i> ដាក់កិច្ចការថ្មី
+                </button>
+              </div>
+            </div>
+
+            <!-- Homework Cards Grid -->
+            <div class="card-body">
+              <div class="homework-grid" id="homeworkListContainer">
+                <!-- Rendered via JS -->
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- TAB 4: GRADES & EVALUATION -->
+        <section class="tab-content" id="tab-grades">
+          <div class="content-card">
+            <div class="card-header-flex flex-wrap gap-2">
+              <div class="header-title-box">
+                <i class="fa-solid fa-award text-warning"></i>
+                <div>
+                  <h3 class="card-title">តារាងបញ្ចូលពិន្ទុ និងគណនាលទ្ធផលសិក្សា</h3>
+                  <p class="card-subtitle">គណនាមធ្យមភាគ ចំណាត់ថ្នាក់ និងនិទ្ទេសស្វ័យប្រវត្តិតាមស្តង់ដារក្រសួងអប់រំ</p>
+                </div>
+              </div>
+
+              <div class="header-actions-flex">
+                <div class="select-group-wrap">
+                  <label for="gradeMonthSelect"><i class="fa-solid fa-calendar-week"></i> ប្រឡងប្រចាំ៖</label>
+                  <select id="gradeMonthSelect" class="form-select-sm">
+                    <option value="month_10" selected>ខែ តុលា</option>
+                    <option value="month_11">ខែ វិច្ឆិកា</option>
+                    <option value="month_12">ខែ ធ្នូ</option>
+                    <option value="month_01">ខែ មករា</option>
+                    <option value="sem_1">ប្រឡងឆមាសទី ១</option>
+                    <option value="month_02">ខែ កុម្ភៈ</option>
+                    <option value="month_03">ខែ មីនា</option>
+                    <option value="month_04">ខែ មេសា</option>
+                    <option value="month_05">ខែ ឧសភា</option>
+                    <option value="sem_2">ប្រឡងឆមាសទី ២</option>
+                    <option value="yearly">លទ្ធផលប្រចាំឆ្នាំ</option>
+                  </select>
+                </div>
+
+                <button class="btn btn-info btn-sm" id="autoCalculateRankBtn">
+                  <i class="fa-solid fa-calculator"></i> គណនាចំណាត់ថ្នាក់
+                </button>
+                <button class="btn btn-primary btn-sm" id="saveGradesBtn">
+                  <i class="fa-solid fa-floppy-disk"></i> រក្សាទុកពិន្ទុ
+                </button>
+                <button class="btn btn-success btn-sm" id="exportGradesExcelBtn">
+                  <i class="fa-solid fa-file-excel"></i> នាំចេញ Excel
+                </button>
+              </div>
+            </div>
+
+            <div class="grade-legend-bar">
+              <div class="legend-items-wrap">
+                <div class="legend-item"><span class="legend-dot" style="background:#4f46e5;"></span> ភាសាខ្មែរ (100)</div>
+                <div class="legend-item"><span class="legend-dot" style="background:#06b6d4;"></span> គណិតវិទ្យា (100)</div>
+                <div class="legend-item"><span class="legend-dot" style="background:#10b981;"></span> រូបវិទ្យា (50)</div>
+                <div class="legend-item"><span class="legend-dot" style="background:#f59e0b;"></span> គីមីវិទ្យា (50)</div>
+                <div class="legend-item"><span class="legend-dot" style="background:#8b5cf6;"></span> ជីវវិទ្យា (50)</div>
+                <div class="legend-item"><span class="legend-dot" style="background:#ec4899;"></span> ផែនដី (50)</div>
+                <div class="legend-item"><span class="legend-dot" style="background:#14b8a6;"></span> ប្រវត្តិ (50)</div>
+                <div class="legend-item"><span class="legend-dot" style="background:#f97316;"></span> ភូមិ (50)</div>
+                <div class="legend-item"><span class="legend-dot" style="background:#6366f1;"></span> សីលធម៌ (50)</div>
+                <div class="legend-item"><span class="legend-dot" style="background:#0ea5e9;"></span> អង់គ្លេស (50)</div>
+                <div class="legend-item"><span class="legend-dot" style="background:#ec4899;"></span> គេហវិទ្យា (50)</div>
+                <div class="legend-item"><span class="legend-dot" style="background:#84cc16;"></span> ICT/កីឡា (50)</div>
+              </div>
+            </div>
+
+            <!-- Quick Pan & Scroll Bar -->
+            <div class="table-quick-nav-bar">
+              <div class="scroll-hint-pill">
+                <i class="fa-solid fa-up-down-left-right"></i>
+                <span>អាចអូស (Drag / Swipe) លើ-ក្រោម និង ឆ្វេង-ស្តាំ ដោយសេរី</span>
+              </div>
+              <div class="scroll-nav-group">
+                <button type="button" class="scroll-nav-btn" onclick="DragScrollManager.scrollToLeft('gradeTableWrapper')">
+                  <i class="fa-solid fa-angles-left"></i> ទៅដើមតារាង (ឆ្វេង)
+                </button>
+                <button type="button" class="scroll-nav-btn" onclick="DragScrollManager.scrollToRight('gradeTableWrapper')">
+                  ទៅពិន្ទុសរុប & ចំណាត់ថ្នាក់ (ស្តាំ) <i class="fa-solid fa-angles-right"></i>
+                </button>
+                <button type="button" class="scroll-nav-btn" onclick="DragScrollManager.scrollToTop('gradeTableWrapper')">
+                  <i class="fa-solid fa-arrow-up"></i> ទៅលើ
+                </button>
+                <button type="button" class="scroll-nav-btn" onclick="DragScrollManager.scrollToBottom('gradeTableWrapper')">
+                  <i class="fa-solid fa-arrow-down"></i> ទៅក្រោម
+                </button>
+              </div>
+            </div>
+
+            <div class="card-body p-0">
+              <div class="grade-table-outer-container">
+                <button type="button" class="floating-scroll-btn btn-scroll-left" title="អូសទៅឆ្វេង (ដើមតារាង)" onclick="DragScrollManager.scrollToLeft('gradeTableWrapper')">
+                  <i class="fa-solid fa-chevron-left"></i>
+                </button>
+                <button type="button" class="floating-scroll-btn btn-scroll-right" title="អូសទៅស្តាំ (ពិន្ទុសរុប & ចំណាត់ថ្នាក់)" onclick="DragScrollManager.scrollToRight('gradeTableWrapper')">
+                  <i class="fa-solid fa-chevron-right"></i>
+                </button>
+
+                <div class="table-responsive grade-table-wrapper" id="gradeTableWrapper">
+                  <table class="data-table grade-table" id="gradesEntryTable">
+                    <thead>
+                      <tr>
+                        <th class="sticky-col col-no">ល.រ</th>
+                        <th class="sticky-col col-id">អត្តលេខ</th>
+                        <th class="sticky-col col-name">គោត្តនាម-នាម</th>
+                        <th class="sticky-col col-gender">ភេទ</th>
+                        <th class="subject-col" title="ភាសាខ្មែរ (Max: 100)">ភាសាខ្មែរ<br><small>(១០០)</small></th>
+                        <th class="subject-col" title="គណិតវិទ្យា (Max: 100)">គណិតវិទ្យា<br><small>(១០០)</small></th>
+                        <th class="subject-col" title="រូបវិទ្យា (Max: 50)">រូបវិទ្យា<br><small>(៥០)</small></th>
+                        <th class="subject-col" title="គីមីវិទ្យា (Max: 50)">គីមីវិទ្យា<br><small>(៥០)</small></th>
+                        <th class="subject-col" title="ជីវវិទ្យា (Max: 50)">ជីវវិទ្យា<br><small>(៥០)</small></th>
+                        <th class="subject-col" title="ផែនដីវិទ្យា (Max: 50)">ផែនដី<br><small>(៥០)</small></th>
+                        <th class="subject-col" title="ប្រវត្តិវិទ្យា (Max: 50)">ប្រវត្តិ<br><small>(៥០)</small></th>
+                        <th class="subject-col" title="ភូមិវិទ្យា (Max: 50)">ភូមិ<br><small>(៥០)</small></th>
+                        <th class="subject-col" title="សីលធម៌-ពលរដ្ឋ (Max: 50)">សីលធម៌<br><small>(៥០)</small></th>
+                        <th class="subject-col" title="ភាសាបរទេស (អង់គ្លេស) (Max: 50)">អង់គ្លេស<br><small>(៥០)</small></th>
+                        <th class="subject-col" title="គេហវិទ្យា (Max: 50)">គេហវិទ្យា<br><small>(៥០)</small></th>
+                        <th class="subject-col" title="កុំព្យូទ័រ & កីឡា (Max: 50)">ICT/កីឡា<br><small>(៥០)</small></th>
+                        <th class="summary-col bg-soft-blue">ពិន្ទុសរុប<br><small>(៧០០)</small></th>
+                        <th class="summary-col bg-soft-green">មធ្យមភាគ<br><small>(៥០)</small></th>
+                        <th class="summary-col bg-soft-amber">និទ្ទេស</th>
+                        <th class="summary-col bg-soft-purple">ចំណាត់ថ្នាក់</th>
+                        <th class="summary-col">លទ្ធផល</th>
+                      </tr>
+                    </thead>
+                    <tbody id="gradesTableBody">
+                      <!-- Rendered via JS -->
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            </div>
+
+            <div class="card-footer-flex">
+              <div class="grade-stats-inline">
+                <span><i class="fa-solid fa-chart-simple"></i> មធ្យមភាគខ្ពស់បំផុត៖ <strong id="gradeStatsMax" class="text-success">0.00</strong></span>
+                <span>មធ្យមភាគទាបបំផុត៖ <strong id="gradeStatsMin" class="text-danger">0.00</strong></span>
+                <span>មធ្យមភាគរួមថ្នាក់៖ <strong id="gradeStatsAvg" class="text-primary">0.00</strong></span>
+                <span>អត្រាជាប់ (>= 25)៖ <strong id="gradeStatsPassRate" class="text-success">0%</strong></span>
+              </div>
+              <div class="grade-actions-footer">
+                <button class="btn btn-outline btn-sm" onclick="switchTab('reports')">
+                  <i class="fa-solid fa-print"></i> បោះពុម្ពតារាងពិន្ទុ & ចំណាត់ថ្នាក់
+                </button>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- TAB: SEMESTER & ANNUAL AGGREGATION (NEW FEATURE) -->
+        <section class="tab-content" id="tab-semester">
+          <div class="content-card">
+            <div class="card-header-flex flex-wrap gap-2">
+              <div class="header-title-box">
+                <i class="fa-solid fa-graduation-cap text-accent"></i>
+                <div>
+                  <h3 class="card-title">តារាងបូកសរុបលទ្ធផលឆមាស និងប្រចាំឆ្នាំ (សម្រេចឡើងថ្នាក់)</h3>
+                  <p class="card-subtitle">បូកសរុបមធ្យមភាគ ឆមាសទី១ ឆមាសទី២ និងការសម្រេច «ឡើងថ្នាក់/ត្រួតថ្នាក់»</p>
+                </div>
+              </div>
+              <div class="header-actions-flex">
+                <button class="btn btn-success btn-sm" id="exportSemesterExcelBtn">
+                  <i class="fa-solid fa-file-excel"></i> នាំចេញ Excel
+                </button>
+                <button class="btn btn-outline btn-sm" id="printSemesterBtn">
+                  <i class="fa-solid fa-print"></i> បោះពុម្ព
+                </button>
+              </div>
+            </div>
+
+            <!-- Semester Summary KPI Cards -->
+            <div class="attendance-summary-bar">
+              <div class="att-stat-item stat-present">
+                <span class="att-label">បានឡើងថ្នាក់ទី ៩៖</span>
+                <span class="att-num" id="semStatPass">38 នាក់</span>
+              </div>
+              <div class="att-stat-item stat-late">
+                <span class="att-label">ប្រឡងសងវិស្សមកាល៖</span>
+                <span class="att-num" id="semStatReexam">3 នាក់</span>
+              </div>
+              <div class="att-stat-item stat-absent">
+                <span class="att-label">ត្រួតថ្នាក់ទី ៨៖</span>
+                <span class="att-num" id="semStatRetain">1 នាក់</span>
+              </div>
+              <div class="att-stat-item stat-permission">
+                <span class="att-label">អត្រាឡើងថ្នាក់រួម៖</span>
+                <span class="att-num" id="semStatRate">90.5%</span>
+              </div>
+            </div>
+
+            <!-- Table -->
+            <div class="card-body p-0">
+              <div class="table-responsive">
+                <table class="data-table">
+                  <thead>
+                    <tr>
+                      <th style="width: 50px;">ចំណាត់ថ្នាក់</th>
+                      <th style="width: 90px;">អត្តលេខ</th>
+                      <th>គោត្តនាម-នាម</th>
+                      <th style="width: 60px;">ភេទ</th>
+                      <th style="width: 120px; text-align: center;">ម.ភ ឆមាសទី ១</th>
+                      <th style="width: 120px; text-align: center;">ម.ភ ឆមាសទី ២</th>
+                      <th style="width: 130px; text-align: center;">ម.ភ ប្រចាំឆ្នាំ</th>
+                      <th style="width: 110px; text-align: center;">និទ្ទេស</th>
+                      <th style="width: 150px; text-align: center;">សេចក្តីសម្រេច</th>
+                      <th style="width: 80px; text-align: center;">សកម្មភាព</th>
+                    </tr>
+                  </thead>
+                  <tbody id="semesterTableBody">
+                    <!-- Rendered via JS -->
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- TAB 5: REPORTS & CERTIFICATES -->
+        <section class="tab-content" id="tab-reports">
+          <div class="reports-container">
+            <div class="content-card mb-4">
+              <div class="card-header-flex flex-wrap gap-2">
+                <div class="header-title-box">
+                  <i class="fa-solid fa-file-invoice text-primary"></i>
+                  <div>
+                    <h3 class="card-title">ចេញរបាយការណ៍ តារាងកិត្តិយស និងប័ណ្ណសរសើរ</h3>
+                    <p class="card-subtitle">ជ្រើសរើសទម្រង់របាយការណ៍ផ្លូវការ ដើម្បីមើល ឬបោះពុម្ព</p>
+                  </div>
+                </div>
+
+                <div class="report-type-switcher">
+                  <button class="report-tab-btn active" data-report="honor-roll" id="repTabHonor">
+                    <i class="fa-solid fa-trophy"></i> តារាងកិត្តិយស
+                  </button>
+                  <button class="report-tab-btn" data-report="full-transcript" id="repTabTranscript">
+                    <i class="fa-solid fa-table-list"></i> តារាងបូកសរុបពិន្ទុប្រចាំខែ
+                  </button>
+                  <button class="report-tab-btn" data-report="student-bulletin" id="repTabBulletin">
+                    <i class="fa-solid fa-id-card-clip"></i> ព្រឹត្តិបត្រពិន្ទុបុគ្គល
+                  </button>
+                  <button class="report-tab-btn" data-report="certificate" id="repTabCert">
+                    <i class="fa-solid fa-award"></i> ប័ណ្ណសរសើរ (Honor Certificate)
+                  </button>
+                </div>
+              </div>
+
+              <!-- Report Filter Controls -->
+              <div class="report-filter-bar">
+                <div class="filter-item">
+                  <label for="reportMonthSelect">ប្រចាំខែ / ឆមាស៖</label>
+                  <select id="reportMonthSelect" class="form-select-sm">
+                    <option value="month_10" selected>ខែ តុលា</option>
+                    <option value="month_11">ខែ វិច្ឆិកា</option>
+                    <option value="month_12">ខែ ធ្នូ</option>
+                    <option value="month_01">ខែ មករា</option>
+                    <option value="sem_1">ឆមាសទី ១</option>
+                    <option value="month_02">ខែ កុម្ភៈ</option>
+                    <option value="month_03">ខែ មីនា</option>
+                    <option value="month_04">ខែ មេសា</option>
+                    <option value="month_05">ខែ ឧសភា</option>
+                    <option value="sem_2">ឆមាសទី ២</option>
+                    <option value="yearly">ប្រចាំឆ្នាំ</option>
+                  </select>
+                </div>
+
+                <div class="filter-item" id="reportStudentSelectWrapper" style="display: none;">
+                  <label for="reportStudentSelect">ជ្រើសរើសសិស្ស៖</label>
+                  <select id="reportStudentSelect" class="form-select-sm">
+                    <!-- Populated via JS -->
+                  </select>
+                </div>
+
+                <div class="filter-item" id="reportCertRankWrapper" style="display: none;">
+                  <label for="reportCertRankSelect">សម្រាប់សិស្សចំណាត់ថ្នាក់៖</label>
+                  <select id="reportCertRankSelect" class="form-select-sm">
+                    <option value="top1">ចំណាត់ថ្នាក់លេខ ១</option>
+                    <option value="top2">ចំណាត់ថ្នាក់លេខ ២</option>
+                    <option value="top3">ចំណាត់ថ្នាក់លេខ ៣</option>
+                    <option value="top4">ចំណាត់ថ្នាក់លេខ ៤</option>
+                    <option value="top5">ចំណាត់ថ្នាក់លេខ ៥</option>
+                    <option value="all">សិស្សទាំងអស់</option>
+                  </select>
+                </div>
+
+                <div class="report-actions-btn-group">
+                  <button class="btn btn-primary btn-sm" id="printActiveReportBtn">
+                    <i class="fa-solid fa-print"></i> បោះពុម្ព (Print / PDF)
+                  </button>
+                  <button class="btn btn-outline btn-sm" id="celebrateConfettiBtn" title="អបអរសាទរ">
+                    <i class="fa-solid fa-wand-magic-sparkles"></i> អបអរសាទរ 🎉
+                  </button>
+                </div>
+              </div>
+            </div>
+
+            <!-- Print Preview Paper Canvas -->
+            <div class="print-preview-container">
+              
+              <!-- 1. HONOR ROLL VIEW (តារាងកិត្តិយស) -->
+              <div class="report-paper-view" id="reportPaperHonor">
+                <div class="official-header">
+                  <div class="cambodia-heading">
+                    <div class="kingdom-moul">ព្រះរាជាណាចក្រកម្ពុជា</div>
+                    <div class="motto-moul">ជាតិ សាសនា ព្រះមហាក្សត្រ</div>
+                    <div class="divider-tapered">3 3 3</div>
+                  </div>
+                  <div class="school-heading-left">
+                    <div class="ministry-title">ក្រសួងអប់រំ យុវជន និងកីឡា</div>
+                    <div class="school-title-kh" id="rptHonorSchoolName">អនុវិទ្យាល័យ ហ៊ុន សែន</div>
+                    <div class="class-title-kh">ថ្នាក់ទី៖ <strong id="rptHonorClassName">៨ A</strong></div>
+                  </div>
+                </div>
+
+                <div class="report-document-title">
+                  <h2 class="title-moul">តារាងកិត្តិយសសិស្សពូកែ</h2>
+                  <h3 class="subtitle-kh" id="rptHonorMonthTitle">ប្រចាំខែ តុលា ឆ្នាំសិក្សា ២០២៥-២០២៦</h3>
+                </div>
+
+                <div class="honor-podium-cards" id="honorPodiumCards"></div>
+
+                <div class="honor-table-wrap">
+                  <h4 class="section-badge-title" id="rptHonorTableTitle"><i class="fa-solid fa-medal"></i> តារាងចំណាត់ថ្នាក់សិស្សកិត្តិយសទាំង ៥ រូប (ចំណាត់ថ្នាក់ពីលេខ ១ ដល់លេខ ៥)</h4>
+                  <table class="official-table">
+                    <thead>
+                      <tr>
+                        <th>ចំណាត់ថ្នាក់</th>
+                        <th>អត្តលេខ</th>
+                        <th>គោត្តនាម និងនាម</th>
+                        <th>ភេទ</th>
+                        <th>ថ្ងៃខែឆ្នាំកំណើត</th>
+                        <th>ពិន្ទុសរុប</th>
+                        <th>មធ្យមភាគ</th>
+                        <th>និទ្ទេស</th>
+                        <th>ការសរសើរ</th>
+                      </tr>
+                    </thead>
+                    <tbody id="rptHonorTableBody"></tbody>
+                  </table>
+                </div>
+
+                <div class="official-signatures">
+                  <div class="sig-box">
+                    <div class="sig-role">បានឃើញ និងឯកភាព</div>
+                    <div class="sig-title">នាយកអនុវិទ្យាល័យ</div>
+                    <div class="sig-space"></div>
+                    <div class="sig-name" id="rptHonorPrincipalName">លោក អ៊ុំ សុវណ្ណារិទ្ធ</div>
+                  </div>
+                  <div class="sig-box">
+                    <div class="sig-date" id="rptHonorDateSigned">ថ្ងៃព្រហស្បតិ៍ ទី ០៩ ខែ តុលា ឆ្នាំ ២០២៥</div>
+                    <div class="sig-title">គ្រូបន្ទុកថ្នាក់</div>
+                    <div class="sig-space"></div>
+                    <div class="sig-name" id="rptHonorTeacherName">លោកគ្រូ សុខ ចាន់ថា</div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- 2. FULL OFFICIAL TRANSCRIPT VIEW -->
+              <div class="report-paper-view" id="reportPaperTranscript" style="display: none;">
+                <div class="official-header">
+                  <div class="cambodia-heading">
+                    <div class="kingdom-moul">ព្រះរាជាណាចក្រកម្ពុជា</div>
+                    <div class="motto-moul">ជាតិ សាសនា ព្រះមហាក្សត្រ</div>
+                    <div class="divider-tapered">3 3 3</div>
+                  </div>
+                  <div class="school-heading-left">
+                    <div class="ministry-title">ក្រសួងអប់រំ យុវជន និងកីឡា</div>
+                    <div class="school-title-kh" id="rptTransSchoolName">អនុវិទ្យាល័យ ហ៊ុន សែន</div>
+                    <div class="class-title-kh">ថ្នាក់ទី៖ <strong id="rptTransClassName">៨ A</strong></div>
+                  </div>
+                </div>
+
+                <div class="report-document-title">
+                  <h2 class="title-moul">តារាងបូកសរុបលទ្ធផលការសិក្សា</h2>
+                  <h3 class="subtitle-kh" id="rptTransMonthTitle">ប្រចាំខែ តុលា ឆ្នាំសិក្សា ២០២៥-២០២៦</h3>
+                </div>
+
+                <div class="official-full-table-wrap">
+                  <table class="official-table transcript-sheet-table" id="rptFullTranscriptTable">
+                    <thead>
+                      <tr>
+                        <th rowspan="2">ល.រ</th>
+                        <th rowspan="2">អត្តលេខ</th>
+                        <th rowspan="2">គោត្តនាម និងនាម</th>
+                        <th rowspan="2">ភេទ</th>
+                        <th colspan="11">ពិន្ទុតាមមុខវិជ្ជា</th>
+                        <th rowspan="2">សរុប<br>(650)</th>
+                        <th rowspan="2">ម.ភ<br>(50)</th>
+                        <th rowspan="2">និទ្ទេស</th>
+                        <th rowspan="2">ចំណាត់<br>ថ្នាក់</th>
+                        <th rowspan="2">លទ្ធផល</th>
+                      </tr>
+                      <tr class="sub-headers">
+                        <th>ខ្មែរ<br><small>100</small></th>
+                        <th>គណិត<br><small>100</small></th>
+                        <th>រូប<br><small>50</small></th>
+                        <th>គីមី<br><small>50</small></th>
+                        <th>ជីវ<br><small>50</small></th>
+                        <th>ផែនដី<br><small>50</small></th>
+                        <th>ប្រវត្តិ<br><small>50</small></th>
+                        <th>ភូមិ<br><small>50</small></th>
+                        <th>សីលធម៌<br><small>50</small></th>
+                        <th>អង់គ្លេស<br><small>50</small></th>
+                        <th>ICT/កីឡា<br><small>50</small></th>
+                      </tr>
+                    </thead>
+                    <tbody id="rptFullTranscriptBody"></tbody>
+                  </table>
+                </div>
+
+                <div class="transcript-statistics-grid" id="rptTransStatsGrid"></div>
+
+                <div class="official-signatures">
+                  <div class="sig-box">
+                    <div class="sig-role">បានឃើញ និងឯកភាព</div>
+                    <div class="sig-title">នាយកអនុវិទ្យាល័យ</div>
+                    <div class="sig-space"></div>
+                    <div class="sig-name" id="rptTransPrincipalName">លោក អ៊ុំ សុវណ្ណារិទ្ធ</div>
+                  </div>
+                  <div class="sig-box">
+                    <div class="sig-date" id="rptTransDateSigned">ថ្ងៃព្រហស្បតិ៍ ទី ០៩ ខែ តុលា ឆ្នាំ ២០២៥</div>
+                    <div class="sig-title">គ្រូបន្ទុកថ្នាក់</div>
+                    <div class="sig-space"></div>
+                    <div class="sig-name" id="rptTransTeacherName">លោកគ្រូ សុខ ចាន់ថា</div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- 3. INDIVIDUAL STUDENT REPORT CARD (WITH QR VERIFICATION) -->
+              <div class="report-paper-view" id="reportPaperBulletin" style="display: none;">
+                <div class="bulletin-card-frame">
+                  <div class="official-header">
+                    <div class="cambodia-heading">
+                      <div class="kingdom-moul">ព្រះរាជាណាចក្រកម្ពុជា</div>
+                      <div class="motto-moul">ជាតិ សាសនា ព្រះមហាក្សត្រ</div>
+                      <div class="divider-tapered">3 3 3</div>
+                    </div>
+                    <div class="school-heading-left">
+                      <div class="ministry-title">ក្រសួងអប់រំ យុវជន និងកីឡា</div>
+                      <div class="school-title-kh" id="rptBulSchoolName">អនុវិទ្យាល័យ ហ៊ុន សែន</div>
+                    </div>
+                  </div>
+
+                  <div class="report-document-title">
+                    <h2 class="title-moul">ព្រឹត្តិបត្រពិន្ទុ និងលទ្ធផលសិក្សា</h2>
+                    <h3 class="subtitle-kh" id="rptBulPeriodTitle">ប្រចាំខែ តុលា ឆ្នាំសិក្សា ២០២៥-២០២៦</h3>
+                  </div>
+
+                  <!-- Student Info Header Box -->
+                  <div class="bulletin-student-header">
+                    <div class="student-avatar-bulletin">
+                      <img src="" id="rptBulStudentPhoto" alt="Student Photo">
+                    </div>
+                    <div class="student-details-grid">
+                      <div class="detail-cell">
+                        <span class="lbl">គោត្តនាម-នាម៖</span>
+                        <strong class="val text-primary" id="rptBulStudentName">សុខា មុនីរត្ន</strong>
+                      </div>
+                      <div class="detail-cell">
+                        <span class="lbl">ឈ្មោះឡាតាំង៖</span>
+                        <strong class="val" id="rptBulStudentLatin">SOKHA MONYROTH</strong>
+                      </div>
+                      <div class="detail-cell">
+                        <span class="lbl">អត្តលេខសិស្ស៖</span>
+                        <strong class="val" id="rptBulStudentID">STU-8A-001</strong>
+                      </div>
+                      <div class="detail-cell">
+                        <span class="lbl">ភេទ / ថ្ងៃកំណើត៖</span>
+                        <strong class="val"><span id="rptBulStudentGender">ស្រី</span> (<span id="rptBulStudentDob">15-05-2012</span>)</strong>
+                      </div>
+                      <div class="detail-cell">
+                        <span class="lbl">ទីកន្លែងកំណើត៖</span>
+                        <strong class="val" id="rptBulPobInfo">-</strong>
+                      </div>
+                      <div class="detail-cell">
+                        <span class="lbl">អាសយដ្ឋានបច្ចុប្បន្ន៖</span>
+                        <strong class="val" id="rptBulAddressInfo">-</strong>
+                      </div>
+                      <div class="detail-cell">
+                        <span class="lbl">ឈ្មោះឪពុក & មុខរបរ៖</span>
+                        <strong class="val" id="rptBulFatherInfo">សុខា វិចិត្រ (គ្រូបង្រៀន)</strong>
+                      </div>
+                      <div class="detail-cell">
+                        <span class="lbl">ឈ្មោះម្តាយ & មុខរបរ៖</span>
+                        <strong class="val" id="rptBulMotherInfo">កែវ មុនីរត្ន (មេផ្ទះ)</strong>
+                      </div>
+                      <div class="detail-cell">
+                        <span class="lbl">លេខទូរស័ព្ទទាក់ទង៖</span>
+                        <strong class="val" id="rptBulPhoneInfo">012 888 991</strong>
+                      </div>
+                    </div>
+                    <div class="bulletin-qr-box">
+                      <div id="rptBulQrCodeBox"></div>
+                      <small class="text-muted d-block text-center" style="font-size: 0.65rem;">ស្កេនផ្ទៀងផ្ទាត់</small>
+                    </div>
+                  </div>
+
+                  <!-- Subject Breakdown Table -->
+                  <div class="bulletin-table-wrap">
+                    <table class="official-table">
+                      <thead>
+                        <tr>
+                          <th>ល.រ</th>
+                          <th>មុខវិជ្ជាសិក្សា</th>
+                          <th>ពិន្ទុអតិបរមា</th>
+                          <th>ពិន្ទុទទួលបាន</th>
+                          <th>មធ្យមភាគមុខវិជ្ជា</th>
+                          <th>និទ្ទេស</th>
+                          <th>ចំណាត់ថ្នាក់មុខវិជ្ជា</th>
+                        </tr>
+                      </thead>
+                      <tbody id="rptBulSubjectRows"></tbody>
+                      <tfoot>
+                        <tr class="tfoot-total">
+                          <th colspan="2" style="text-align: right;">លទ្ធផលបូកសរុប៖</th>
+                          <th>៦៥០</th>
+                          <th id="rptBulTotalScore">៥៨០.០០</th>
+                          <th id="rptBulAverageScore">៤៤.៦២</th>
+                          <th id="rptBulOverallMention">A (ល្អប្រសើរ)</th>
+                          <th id="rptBulOverallRank">ចំណាត់ថ្នាក់លេខ ១ / ៤២</th>
+                        </tr>
+                      </tfoot>
+                    </table>
+                  </div>
+
+                  <div class="bulletin-remarks-box">
+                    <div class="remark-col">
+                      <div class="remark-title"><i class="fa-solid fa-user-check"></i> វត្តមាន & វិន័យ</div>
+                      <div class="remark-body" id="rptBulAttendanceRemark">
+                        វត្តមានទៀងទាត់ (អវត្តមាន ០ ដង)។ អត្តចរិតស្លូតបូត ឧស្សាហ៍ព្យាយាម គោរពវិន័យសាលាល្អណាស់។
+                      </div>
+                    </div>
+                    <div class="remark-col">
+                      <div class="remark-title"><i class="fa-solid fa-comment-dots"></i> មតិយោបល់របស់លោកគ្រូបន្ទុកថ្នាក់</div>
+                      <div class="remark-body" id="rptBulTeacherComment">
+                        សិស្សឆ្នើម មានការយល់ដឹងខ្ពស់លើគ្រប់មុខវិជ្ជា។ សូមបន្តរក្សា និងពង្រឹងការសិក្សាបន្ថែមទៀត!
+                      </div>
+                    </div>
+                  </div>
+
+                  <div class="official-signatures">
+                    <div class="sig-box">
+                      <div class="sig-role">មតិ និងហត្ថលេខាអាណាព្យាបាល</div>
+                      <div class="sig-space"></div>
+                      <div class="sig-name">................................................</div>
+                    </div>
+                    <div class="sig-box">
+                      <div class="sig-date" id="rptBulDateSigned">ថ្ងៃទី ០៩ ខែ តុលា ឆ្នាំ ២០២៥</div>
+                      <div class="sig-title">គ្រូបន្ទុកថ្នាក់</div>
+                      <div class="sig-space"></div>
+                      <div class="sig-name" id="rptBulTeacherName">លោកគ្រូ សុខ ចាន់ថា</div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- 4. HONOR CERTIFICATE VIEW (ប័ណ្ណសរសើរផ្លូវការ) -->
+              <div class="report-paper-view" id="reportPaperCert" style="display: none;">
+                <div class="certificate-container" id="certificateContent">
+                  <div class="cert-outer-border">
+                    <div class="cert-inner-border">
+                      <div class="cert-corner-decor tl"></div>
+                      <div class="cert-corner-decor tr"></div>
+                      <div class="cert-corner-decor bl"></div>
+                      <div class="cert-corner-decor br"></div>
+
+                      <div class="cert-header">
+                        <div class="cert-kingdom-title">ព្រះរាជាណាចក្រកម្ពុជា</div>
+                        <div class="cert-motto-title">ជាតិ សាសនា ព្រះមហាក្សត្រ</div>
+                        <div class="cert-divider-emblem">
+                          <i class="fa-solid fa-star"></i>
+                          <i class="fa-solid fa-star"></i>
+                          <i class="fa-solid fa-crown"></i>
+                          <i class="fa-solid fa-star"></i>
+                          <i class="fa-solid fa-star"></i>
+                        </div>
+                        <div class="cert-school-name" id="certSchoolName">អនុវិទ្យាល័យ ហ៊ុន សែន</div>
+                      </div>
+
+                      <div class="cert-main-title">
+                        <h1 class="cert-title-kh">ប័ណ្ណសរសើរ</h1>
+                        <span class="cert-subtitle-en">CERTIFICATE OF EXCELLENCE</span>
+                      </div>
+
+                      <div class="cert-body-content">
+                        <p class="cert-intro-text">គណៈគ្រប់គ្រងសាលា និងលោកគ្រូបន្ទុកថ្នាក់ សូមផ្តល់ជូននូវប័ណ្ណសរសើរនេះដល់៖</p>
+                        
+                        <div class="cert-student-highlight">
+                          <h2 class="cert-student-name" id="certStudentName">យុវសិស្ស សុខា មុនីរត្ន</h2>
+                          <div class="cert-student-latin" id="certStudentLatin">SOKHA MONYROTH</div>
+                          <div class="cert-student-meta">
+                            <span>ភេទ៖ <strong id="certStudentGender">ស្រី</strong></span> | 
+                            <span>សិស្សថ្នាក់ទី៖ <strong id="certStudentClass">៨ A</strong></span> |
+                            <span>អត្តលេខ៖ <strong id="certStudentID">STU-8A-001</strong></span>
+                          </div>
+                        </div>
+
+                        <p class="cert-reason-text">
+                          ដែលបានខិតខំប្រឹងប្រែងរៀនសូត្រ មានវិន័យ និងសីលធម៌ថ្លៃថ្នូរ រហូតទទួលបាន
+                          <span class="cert-rank-highlight" id="certRankHighlight">ចំណាត់ថ្នាក់លេខ ១</span>
+                          ប្រចាំ <strong id="certPeriodText">ខែ តុលា ឆ្នាំសិក្សា ២០២៥-២០២៦</strong>
+                          ដោយទទួលបានមធ្យមភាគ <strong id="certAverageText" class="text-primary">៤៧.២០</strong> (និទ្ទេស <strong id="certMentionText">A - ល្អប្រសើរ</strong>)។
+                        </p>
+                      </div>
+
+                      <div class="cert-footer-signatures">
+                        <div class="cert-sig-col left">
+                          <div class="cert-sig-role">បានឃើញ និងឯកភាព</div>
+                          <div class="cert-sig-title">នាយកអនុវិទ្យាល័យ</div>
+                          <div class="cert-sig-seal-space">
+                            <div class="cert-school-seal-mock">
+                              <i class="fa-solid fa-certificate"></i>
+                              <span>ត្រាសាលា</span>
+                            </div>
+                          </div>
+                          <div class="cert-sig-signer" id="certPrincipalName">លោក អ៊ុំ សុវណ្ណារិទ្ធ</div>
+                        </div>
+
+                        <div class="cert-sig-col right">
+                          <div class="cert-sig-date" id="certDateSigned">រាជធានីភ្នំពេញ, ថ្ងៃទី ០៩ ខែ តុលា ឆ្នាំ ២០២៥</div>
+                          <div class="cert-sig-title">គ្រូបន្ទុកថ្នាក់</div>
+                          <div class="cert-sig-seal-space"></div>
+                          <div class="cert-sig-signer" id="certTeacherName">លោកគ្រូ សុខ ចាន់ថា</div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+            </div>
+          </div>
+        </section>
+
+        <!-- TAB: SMART INSIGHTS & AI ANALYSIS (NEW FEATURE) -->
+        <section class="tab-content" id="tab-insights">
+          <div class="insights-container">
+            <!-- Top Insights KPI Overview -->
+            <div class="dashboard-grid-2 mb-4">
+              <!-- Weakest Subjects Card -->
+              <div class="content-card">
+                <div class="card-header-flex">
+                  <div class="header-title-box">
+                    <i class="fa-solid fa-triangle-exclamation text-danger"></i>
+                    <div>
+                      <h3 class="card-title">មុខវិជ្ជាខ្សោយដែលត្រូវពង្រឹង (Weak Subjects)</h3>
+                      <p class="card-subtitle">មុខវិជ្ជាដែលមានមធ្យមភាគទាបជាងគេក្នុងថ្នាក់</p>
+                    </div>
+                  </div>
+                </div>
+                <div class="card-body" id="insightsWeakSubjectsList">
+                  <!-- Rendered via JS -->
+                </div>
+              </div>
+
+              <!-- Strongest Subjects Card -->
+              <div class="content-card">
+                <div class="card-header-flex">
+                  <div class="header-title-box">
+                    <i class="fa-solid fa-circle-check text-success"></i>
+                    <div>
+                      <h3 class="card-title">មុខវិជ្ជាខ្លាំង និងលេចធ្លោ (Strong Subjects)</h3>
+                      <p class="card-subtitle">មុខវិជ្ជាដែលមានអត្រាជាប់ និងមធ្យមភាគខ្ពស់</p>
+                    </div>
+                  </div>
+                </div>
+                <div class="card-body" id="insightsStrongSubjectsList">
+                  <!-- Rendered via JS -->
+                </div>
+              </div>
+            </div>
+
+            <!-- At-Risk Students Warning Table -->
+            <div class="content-card mb-4">
+              <div class="card-header-flex">
+                <div class="header-title-box">
+                  <i class="fa-solid fa-user-slash text-danger"></i>
+                  <div>
+                    <h3 class="card-title">បញ្ជីសិស្សប្រឈមនឹងការធ្លាក់ (At-Risk Students Intervention)</h3>
+                    <p class="card-subtitle">សិស្សមានមធ្យមភាគទាប < ២៧ ត្រូវការការបំប៉ន និងទំនាក់ទំនងឪពុកម្តាយជាបន្ទាន់</p>
+                  </div>
+                </div>
+              </div>
+              <div class="card-body p-0">
+                <div class="table-responsive">
+                  <table class="data-table">
+                    <thead>
+                      <tr>
+                        <th style="width: 50px;">ល.រ</th>
+                        <th style="width: 100px;">អត្តលេខ</th>
+                        <th>ឈ្មោះសិស្ស</th>
+                        <th style="width: 100px; text-align: center;">មធ្យមភាគ</th>
+                        <th>វិធានការដោះស្រាយ & ដំណឹងឪពុកម្តាយ</th>
+                      </tr>
+                    </thead>
+                    <tbody id="insightsAtRiskTableBody">
+                      <!-- Rendered via JS -->
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            </div>
+
+            <!-- AI Action Plan Box -->
+            <div id="insightsActionPlan">
+              <!-- Rendered via JS -->
+            </div>
+          </div>
+        </section>
+
+        <!-- TAB 6: TIMETABLE -->
+        <section class="tab-content" id="tab-timetable">
+          <div class="content-card">
+            <div class="card-header-flex flex-wrap gap-2">
+              <div class="header-title-box">
+                <i class="fa-solid fa-calendar-days text-info"></i>
+                <div>
+                  <h3 class="card-title">កាលវិភាគបង្រៀន និងរៀនប្រចាំសប្តាហ៍</h3>
+                  <p class="card-subtitle" id="timetableSubtitle">កាលវិភាគថ្នាក់ទី ៨ A (វេនព្រឹក៖ ០៧:០០ - ១១:១៥ ព្រឹក)</p>
+                </div>
+              </div>
+              <div class="header-actions-flex">
+                <button class="btn btn-primary btn-sm" id="editTimetableBtn">
+                  <i class="fa-solid fa-pen-to-square"></i> កែប្រែកាលវិភាគ
+                </button>
+                <button class="btn btn-outline btn-sm" id="printTimetableBtn">
+                  <i class="fa-solid fa-print"></i> បោះពុម្ពកាលវិភាគ
+                </button>
+              </div>
+            </div>
+
+            <!-- Shift Switcher Bar & User Guidance -->
+            <div class="p-3 bg-app border-bottom d-flex justify-content-between align-items-center flex-wrap gap-2">
+              <div class="d-flex align-items-center gap-2 flex-wrap">
+                <span class="font-khmer font-bold text-primary"><i class="fa-solid fa-filter"></i> ជ្រើសរើសវេនសិក្សា៖</span>
+                <div class="btn-group" id="timetableShiftToggle">
+                  <button type="button" class="btn btn-primary btn-sm active" data-shift="morning">
+                    <i class="fa-solid fa-sun text-warning"></i> វេនព្រឹក (០៧:០០ - ១១:១៥)
+                  </button>
+                  <button type="button" class="btn btn-outline btn-sm" data-shift="afternoon">
+                    <i class="fa-solid fa-cloud-sun text-accent"></i> វេនរសៀល/ល្ងាច (១៣:០០ - ១៧:១៥)
+                  </button>
+                  <button type="button" class="btn btn-outline btn-sm" data-shift="all">
+                    <i class="fa-solid fa-calendar-week text-primary"></i> ពេញមួយថ្ងៃ (Full Day)
+                  </button>
+                </div>
+              </div>
+              <div class="font-khmer font-sm text-muted">
+                <i class="fa-solid fa-hand-pointer text-primary"></i> <strong>គន្លឹះ៖</strong> ចុចលើប្រអប់ម៉ោង ឬឈ្មោះគ្រូ ដើម្បីកែប្រែបានភ្លាមៗ!
+              </div>
+            </div>
+
+            <div class="card-body p-0">
+              <div class="table-responsive">
+                <table class="data-table timetable-table" id="timetableTable">
+                  <thead>
+                    <tr>
+                      <th style="width: 120px;">ម៉ោងសិក្សា</th>
+                      <th>ចន្ទ (Monday)</th>
+                      <th>អង្គារ (Tuesday)</th>
+                      <th>ពុធ (Wednesday)</th>
+                      <th>ព្រហស្បតិ៍ (Thursday)</th>
+                      <th>សុក្រ (Friday)</th>
+                      <th>សៅរ៍ (Saturday)</th>
+                    </tr>
+                  </thead>
+                  <tbody id="timetableTableBody"></tbody>
+                </table>
+              </div>
+            </div>
+
+            <div class="card-body border-top">
+              <h4 class="section-heading mb-3"><i class="fa-solid fa-chalkboard-user"></i> បញ្ជីរាយនាមគ្រូបង្រៀនតាមមុខវិជ្ជា (ថ្នាក់ទី ៨ A)</h4>
+              <div class="teachers-grid" id="teachersGrid"></div>
+            </div>
+          </div>
+        </section>
+
+        <!-- TAB 7: DISCIPLINE & ACTIVITIES -->
+        <section class="tab-content" id="tab-discipline">
+          <div class="content-card">
+            <div class="card-header-flex flex-wrap gap-2">
+              <div class="header-title-box">
+                <i class="fa-solid fa-book-bookmark text-danger"></i>
+                <div>
+                  <h3 class="card-title">កំណត់ត្រាវិន័យ អំពើល្អ និងទំនាក់ទំនងអាណាព្យាបាល</h3>
+                  <p class="card-subtitle">កត់ត្រាការសរសើរ ការព្រមាន និងការទំនាក់ទំនងជាមួយមាតាបិតាសិស្ស</p>
+                </div>
+              </div>
+              <div class="header-actions-flex">
+                <button class="btn btn-primary btn-sm" id="openAddDisciplineModalBtn">
+                  <i class="fa-solid fa-plus"></i> បន្ថែមកំណត់ត្រាថ្មី
+                </button>
+              </div>
+            </div>
+
+            <div class="discipline-filters">
+              <button class="filter-chip active" data-type="all">ទាំងអស់ (<span id="countDiscAll">0</span>)</button>
+              <button class="filter-chip chip-praise" data-type="praise"><i class="fa-solid fa-heart text-success"></i> ការសរសើរ/អំពើល្អ (<span id="countDiscPraise">0</span>)</button>
+              <button class="filter-chip chip-warning" data-type="warning"><i class="fa-solid fa-triangle-exclamation text-warning"></i> ការព្រមាន/កំហុសវិន័យ (<span id="countDiscWarning">0</span>)</button>
+              <button class="filter-chip chip-contact" data-type="parent_contact"><i class="fa-solid fa-phone text-info"></i> ទំនាក់ទំនងអាណាព្យាបាល (<span id="countDiscContact">0</span>)</button>
+            </div>
+
+            <div class="card-body">
+              <div class="discipline-feed-list" id="disciplineFeedList"></div>
+            </div>
+          </div>
+        </section>
+
+        <!-- TAB 8: SETTINGS & BACKUP -->
+        <section class="tab-content" id="tab-settings">
+          <div class="settings-layout-grid">
+            <div class="content-card">
+              <div class="card-header-flex">
+                <div class="header-title-box">
+                  <i class="fa-solid fa-school text-primary"></i>
+                  <h3 class="card-title">ព័ត៌មានសាលារៀន និងថ្នាក់រៀន</h3>
+                </div>
+              </div>
+              <div class="card-body">
+                <form id="schoolSettingsForm">
+                  <div class="form-row-2">
+                    <div class="form-group">
+                      <label for="setSchoolName">ឈ្មោះសាលារៀន (ខ្មែរ)</label>
+                      <input type="text" id="setSchoolName" class="form-input" value="អនុវិទ្យាល័យ ហ៊ុន សែន">
+                    </div>
+                    <div class="form-group">
+                      <label for="setAcademicYear">ឆ្នាំសិក្សា</label>
+                      <input type="text" id="setAcademicYear" class="form-input" value="២០២៥-២០២៦">
+                    </div>
+                  </div>
+
+                  <div class="form-row-2">
+                    <div class="form-group">
+                      <label for="setPrincipalName">ឈ្មោះនាយកសាលា</label>
+                      <input type="text" id="setPrincipalName" class="form-input" value="លោក អ៊ុំ សុវណ្ណារិទ្ធ">
+                    </div>
+                    <div class="form-group">
+                      <label for="setTeacherName">ឈ្មោះគ្រូបន្ទុកថ្នាក់</label>
+                      <input type="text" id="setTeacherName" class="form-input" value="លោកគ្រូ សុខ ចាន់ថា">
+                    </div>
+                  </div>
+
+                  <div class="form-row-2">
+                    <div class="form-group">
+                      <label for="setSchoolAddress">ទីតាំងសាលារៀន</label>
+                      <input type="text" id="setSchoolAddress" class="form-input" value="រាជធានីភ្នំពេញ ព្រះរាជាណាចក្រកម្ពុជា">
+                    </div>
+                    <div class="form-group">
+                      <label for="setSchoolPhone">លេខទូរស័ព្ទទាក់ទង</label>
+                      <input type="text" id="setSchoolPhone" class="form-input" value="០១២ ៣៤៥ ៦៧៨">
+                    </div>
+                  </div>
+
+                  <div class="form-actions mt-4">
+                    <button type="submit" class="btn btn-primary">
+                      <i class="fa-solid fa-floppy-disk"></i> រក្សាទុកការកែប្រែ
+                    </button>
+                  </div>
+                </form>
+              </div>
+            </div>
+
+            <!-- Right: System Backup, Restore & Reset -->
+            <div class="content-card">
+              <div class="card-header-flex">
+                <div class="header-title-box">
+                  <i class="fa-solid fa-database text-accent"></i>
+                  <h3 class="card-title">ការគ្រប់គ្រងទិន្នន័យ & បម្រុងទុក (Backup & Restore)</h3>
+                </div>
+              </div>
+              <div class="card-body">
+                <div class="backup-action-card mb-3">
+                  <div class="backup-icon"><i class="fa-solid fa-cloud-arrow-down text-primary"></i></div>
+                  <div class="backup-info">
+                    <h4>ទាញយកទិន្នន័យបម្រុងទុក (Export Backup JSON)</h4>
+                    <p>រក្សាទុកទិន្នន័យសិស្ស វត្តមាន ពិន្ទុ កិច្ចការផ្ទះ និងកាលវិភាគទាំងអស់ជាឯកសារ JSON</p>
+                    <button class="btn btn-primary btn-sm mt-2" id="exportDataJsonBtn">
+                      <i class="fa-solid fa-download"></i> ទាញយក Backup File
+                    </button>
+                  </div>
+                </div>
+
+                <div class="backup-action-card mb-3">
+                  <div class="backup-icon"><i class="fa-solid fa-cloud-arrow-up text-success"></i></div>
+                  <div class="backup-info">
+                    <h4>បញ្ចូលទិន្នន័យត្រឡប់មកវិញ (Import Backup JSON)</h4>
+                    <p>ជ្រើសរើសឯកសារ Backup JSON ដែលបានទាញយកកន្លងមក ដើម្បីស្ដារទិន្នន័យឡើងវិញ</p>
+                    <input type="file" id="importJsonFileInput" accept=".json" style="display: none;">
+                    <button class="btn btn-outline btn-sm mt-2" id="triggerImportJsonBtn">
+                      <i class="fa-solid fa-upload"></i> ជ្រើសរើសឯកសារ JSON
+                    </button>
+                  </div>
+                </div>
+
+                <div class="backup-action-card border-danger-soft">
+                  <div class="backup-icon"><i class="fa-solid fa-rotate-left text-danger"></i></div>
+                  <div class="backup-info">
+                    <h4 class="text-danger">កំណត់ទិន្នន័យគំរូឡើងវិញ (Reset Sample Data)</h4>
+                    <p>លុបទិន្នន័យបច្ចុប្បន្ន ហើយផ្ទុកទិន្នន័យគំរូសិស្សអនុវិទ្យាល័យ ៤២ នាក់មកវិញ</p>
+                    <button class="btn btn-outline-danger btn-sm mt-2" id="resetSampleDataBtn">
+                      <i class="fa-solid fa-arrows-rotate"></i> ផ្ទុកទិន្នន័យគំរូដើម
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- TAB: SEATING ARRANGEMENT PLAN -->
+        <section class="tab-content" id="tab-seating">
+          <div class="content-card">
+            <div class="card-header-flex">
+              <div class="header-title-box">
+                <i class="fa-solid fa-chair text-primary"></i>
+                <div>
+                  <h3 class="card-title">ប្លង់តុអង្គុយសិស្សក្នុងថ្នាក់ (Classroom Seating Layout)</h3>
+                  <p class="text-muted font-khmer">ស្តង់ដារអនុវិទ្យាល័យ៖ ៣ ជួរ x ៧ តុ x ២ កៅអី = ៤២ កៅអីអង្គុយ</p>
+                </div>
+              </div>
+              <div class="action-buttons-wrap">
+                <div class="dropdown-inline">
+                  <button class="btn btn-outline btn-sm" id="btnArrangeAlpha" title="រៀបតាមលំដាប់អក្ខរក្រម">
+                    <i class="fa-solid fa-arrow-down-a-z"></i> តាមអក្ខរក្រម
+                  </button>
+                  <button class="btn btn-outline btn-sm" id="btnArrangeRank" title="រៀបតាមចំណាត់ថ្នាក់ពូកែ">
+                    <i class="fa-solid fa-award text-warning"></i> តាមចំណាត់ថ្នាក់
+                  </button>
+                  <button class="btn btn-outline btn-sm" id="btnArrangeGender" title="រៀបឆ្លាស់ប្រុស/ស្រី">
+                    <i class="fa-solid fa-venus-mars text-accent"></i> ឆ្លាស់ប្រុស/ស្រី
+                  </button>
+                  <button class="btn btn-outline btn-sm" id="btnArrangeRandom" title="រៀបចៃដន្យ">
+                    <i class="fa-solid fa-shuffle"></i> ចៃដន្យ
+                  </button>
+                  <button class="btn btn-primary btn-sm" id="btnPrintSeating">
+                    <i class="fa-solid fa-print"></i> បោះពុម្ពប្លង់តុ
+                  </button>
+                </div>
+              </div>
+            </div>
+
+            <div class="card-body">
+              <div class="seating-grid-container" id="seatingGridContainer"></div>
+            </div>
+          </div>
+        </section>
+
+        <!-- TAB: QUESTION BANK & EXAM GENERATOR -->
+        <section class="tab-content" id="tab-exams">
+          <div class="content-card">
+            <div class="card-header-flex">
+              <div class="header-title-box">
+                <i class="fa-solid fa-file-circle-question text-warning"></i>
+                <div>
+                  <h3 class="card-title">ធនាគារសំណួរ និងបង្កើតវិញ្ញាសាប្រឡង (Question Bank & Exam Generator)</h3>
+                  <p class="text-muted font-khmer">គ្រប់គ្រងសំណួរតាមមុខវិជ្ជា និងទាញបង្កើតវិញ្ញាសាប្រឡងស្វ័យប្រវត្តតាមស្តង់ដារក្រសួង</p>
+                </div>
+              </div>
+              <div class="action-buttons-wrap">
+                <button class="btn btn-outline btn-sm" id="btnOpenAddQuestion">
+                  <i class="fa-solid fa-plus"></i> បន្ថែមសំណួរថ្មី
+                </button>
+              </div>
+            </div>
+
+            <div class="card-body">
+              <!-- Exam Generation Panel -->
+              <div class="p-3 mb-4 bg-app border rounded">
+                <h4 class="font-khmer text-primary mb-3"><i class="fa-solid fa-wand-magic-sparkles"></i> បង្កើតវិញ្ញាសាប្រឡងផ្លូវការ (Generate Official Exam Paper)</h4>
+                <div class="form-row-3">
+                  <div class="form-group">
+                    <label for="genExamSubject">ជ្រើសរើសមុខវិជ្ជា៖</label>
+                    <select id="genExamSubject" class="form-select"></select>
+                  </div>
+                  <div class="form-group">
+                    <label for="genExamTitle">ចំណងជើងវិញ្ញាសា៖</label>
+                    <input type="text" id="genExamTitle" class="form-input" value="ការប្រឡងឆមាសទី១ ថ្នាក់ទី ៨">
+                  </div>
+                  <div class="form-group">
+                    <label for="genExamDuration">រយៈពេលប្រឡង៖</label>
+                    <select id="genExamDuration" class="form-select">
+                      <option value="៤៥ នាទី">៤៥ នាទី</option>
+                      <option value="៦០ នាទី" selected>៦០ នាទី</option>
+                      <option value="៩០ នាទី">៩០ នាទី</option>
+                    </select>
+                  </div>
+                </div>
+                <div class="d-flex justify-content-between align-items-center mt-3">
+                  <span class="text-muted font-khmer"><i class="fa-solid fa-info-circle"></i> ជ្រើសរើសសំណួរខាងក្រោម (ឬទុកចោលដើម្បីជ្រើសរើសសំណួរទាំងអស់ក្នុងមុខវិជ្ជានោះ)</span>
+                  <button class="btn btn-primary" id="btnGenerateExam">
+                    <i class="fa-solid fa-file-pdf"></i> បង្កើត & មើលគំរូវិញ្ញាសា
+                  </button>
+                </div>
+              </div>
+
+              <!-- Question Bank Filter & List -->
+              <div class="d-flex justify-content-between align-items-center mb-3 flex-wrap gap-2">
+                <div class="d-flex gap-2">
+                  <select id="examSubjectFilter" class="form-select-sm" style="min-width: 180px;"></select>
+                  <input type="text" id="examSearchInput" class="form-input-sm" placeholder="ស្វែងរកសំណួរ..." style="min-width: 200px;">
+                </div>
+              </div>
+
+              <div id="questionBankList"></div>
+            </div>
+          </div>
+        </section>
+
+        <!-- TAB: MINISTRY TEXTBOOKS TRACKER -->
+        <section class="tab-content" id="tab-textbooks">
+          <div class="content-card">
+            <div class="card-header-flex">
+              <div class="header-title-box">
+                <i class="fa-solid fa-book-bookmark text-success"></i>
+                <div>
+                  <h3 class="card-title">គ្រប់គ្រងសៀវភៅពុម្ព និងបណ្ណាល័យ (Ministry Textbooks & Library)</h3>
+                  <p class="text-muted font-khmer">តាមដានការបើកផ្តល់ និងការប្រគល់សៀវភៅពុម្ពក្រសួងទាំង ១១ មុខវិជ្ជាជូនសិស្ស</p>
+                </div>
+              </div>
+              <div class="action-buttons-wrap">
+                <button class="btn btn-success btn-sm" id="btnExportTextbooksExcel">
+                  <i class="fa-solid fa-file-excel"></i> នាំចេញបញ្ជី Excel
+                </button>
+              </div>
+            </div>
+
+            <div class="card-body">
+              <!-- Overview Stat Cards -->
+              <div class="tb-stats-grid">
+                <div class="kpi-card card-primary">
+                  <div class="kpi-icon-box"><i class="fa-solid fa-book"></i></div>
+                  <div class="kpi-content">
+                    <span class="kpi-title">សៀវភៅសរុបក្នុងស្តុក</span>
+                    <h3 id="tbStatTotal">270</h3>
+                  </div>
+                </div>
+                <div class="kpi-card card-info">
+                  <div class="kpi-icon-box"><i class="fa-solid fa-hand-holding-hand"></i></div>
+                  <div class="kpi-content">
+                    <span class="kpi-title">បានចែកជូនសិស្ស</span>
+                    <h3 id="tbStatIssued">252</h3>
+                  </div>
+                </div>
+                <div class="kpi-card card-success">
+                  <div class="kpi-icon-box"><i class="fa-solid fa-boxes-stacked"></i></div>
+                  <div class="kpi-content">
+                    <span class="kpi-title">នៅសល់ក្នុងស្តុក</span>
+                    <h3 id="tbStatAvailable">14</h3>
+                  </div>
+                </div>
+                <div class="kpi-card card-danger">
+                  <div class="kpi-icon-box"><i class="fa-solid fa-triangle-exclamation"></i></div>
+                  <div class="kpi-content">
+                    <span class="kpi-title">ខូចខាត / បាត់បង់</span>
+                    <h3 id="tbStatDamaged">4</h3>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Inventory Table -->
+              <h4 class="font-khmer text-primary mb-2"><i class="fa-solid fa-warehouse"></i> បញ្ជីសារពើភ័ណ្ឌសៀវភៅពុម្ពថ្នាក់ទី ៨</h4>
+              <div class="table-responsive mb-4">
+                <table class="data-table">
+                  <thead>
+                    <tr>
+                      <th style="width: 50px;">ល.រ</th>
+                      <th>ឈ្មោះសៀវភៅពុម្ព</th>
+                      <th>មុខវិជ្ជា</th>
+                      <th style="width: 120px; text-align: center;">ចំនួនសរុប</th>
+                      <th style="width: 120px; text-align: center;">បានចែកសិស្ស</th>
+                      <th style="width: 100px; text-align: center;">នៅសល់</th>
+                      <th style="width: 120px; text-align: center;">ខូចខាត</th>
+                      <th style="width: 100px; text-align: center;">សកម្មភាព</th>
+                    </tr>
+                  </thead>
+                  <tbody id="textbookInventoryBody"></tbody>
+                </table>
+              </div>
+
+              <!-- Student Distribution Matrix -->
+              <h4 class="font-khmer text-primary mb-2"><i class="fa-solid fa-users"></i> បញ្ជីតាមដានការទទួលសៀវភៅរបស់សិស្សម្នាក់ៗ</h4>
+              <div class="table-responsive">
+                <table class="data-table">
+                  <thead>
+                    <tr>
+                      <th style="width: 50px;">ល.រ</th>
+                      <th style="width: 110px;">អត្តលេខ</th>
+                      <th>គោត្តនាម និងនាម</th>
+                      <th style="width: 80px; text-align: center;">ភេទ</th>
+                      <th style="width: 200px; text-align: center;">ស្ថានភាពសៀវភៅ</th>
+                      <th style="width: 150px; text-align: center;">គុណភាពរក្សា</th>
+                      <th style="width: 120px; text-align: center;">ពិនិត្យ</th>
+                    </tr>
+                  </thead>
+                  <tbody id="studentTextbookBody"></tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- TAB: STUDENT COUNCIL & STUDY CLUBS -->
+        <section class="tab-content" id="tab-council">
+          <div class="content-card">
+            <div class="card-header-flex">
+              <div class="header-title-box">
+                <i class="fa-solid fa-users-gear text-info"></i>
+                <div>
+                  <h3 class="card-title">គណៈកម្មការថ្នាក់ និងក្លឹបសិក្សា (Student Council & Study Clubs)</h3>
+                  <p class="text-muted font-khmer">ការចាត់តាំងតួនាទីដឹកនាំថ្នាក់រៀន និងការគ្រប់គ្រងក្លឹបសកម្មភាពសិក្សាក្រៅម៉ោង</p>
+                </div>
+              </div>
+              <div class="action-buttons-wrap">
+                <button class="btn btn-primary btn-sm" id="btnOpenCreateClub">
+                  <i class="fa-solid fa-plus"></i> បង្កើតក្លឹបថ្មី
+                </button>
+              </div>
+            </div>
+
+            <div class="card-body">
+              <!-- Council Leadership Grid -->
+              <h4 class="font-khmer text-primary mb-3"><i class="fa-solid fa-sitemap"></i> គណៈកម្មការគ្រប់គ្រងថ្នាក់រៀន ថ្នាក់ទី ៨ A</h4>
+              <div class="council-roles-grid mb-5" id="councilRolesGrid"></div>
+
+              <!-- Study Clubs List -->
+              <h4 class="font-khmer text-primary mb-3"><i class="fa-solid fa-people-group"></i> ក្លឹបសិក្សា និងសកម្មភាពស្ម័គ្រចិត្ត</h4>
+              <div class="study-clubs-grid" id="studyClubsGrid"></div>
+            </div>
+          </div>
+        </section>
+
+        <!-- TAB: CLASSROOM INTERACTIVE QUIZ & LEADERBOARD -->
+        <section class="tab-content" id="tab-quiz">
+          <div class="content-card">
+            <div class="card-header-flex">
+              <div class="header-title-box">
+                <i class="fa-solid fa-gamepad text-warning"></i>
+                <div>
+                  <h3 class="card-title">ការប្រឡងស្ទង់សមត្ថភាពអន្តរកម្ម (Interactive Class Quiz)</h3>
+                  <p class="text-muted font-khmer">សាកល្បងចំណេះដឹងរហ័សក្នុងថ្នាក់រៀន Countdown Timer និងតារាងពិន្ទុផ្ទាល់</p>
+                </div>
+              </div>
+            </div>
+
+            <div class="card-body">
+              <!-- Lobby View -->
+              <div id="quizLobbyView" class="quiz-lobby-box text-center py-5">
+                <div class="quiz-hero-icon mb-3">
+                  <i class="fa-solid fa-trophy fa-4x text-warning"></i>
+                </div>
+                <h2 class="moul-title text-primary mb-2">តេស្តសមត្ថភាពរហ័សក្នុងថ្នាក់រៀន</h2>
+                <p class="text-muted font-khmer mb-4">ជ្រើសរើសមុខវិជ្ជា និងចំនួនសំណួរដើម្បីចាប់ផ្តើមការប្រកួត</p>
+
+                <div class="quiz-setup-form mx-auto" style="max-width: 480px;">
+                  <div class="form-group mb-3 text-start">
+                    <label class="form-label font-khmer font-bold">មុខវិជ្ជាប្រឡង៖</label>
+                    <select id="quizSubjectSelect" class="form-select"></select>
+                  </div>
+                  <div class="form-group mb-3 text-start">
+                    <label class="form-label font-khmer font-bold">របៀបសាកល្បង៖</label>
+                    <select id="quizStudentSelect" class="form-select"></select>
+                  </div>
+                  <div class="form-group mb-4 text-start">
+                    <label class="form-label font-khmer font-bold">ចំនួនសំណួរ៖</label>
+                    <select id="quizCountSelect" class="form-select">
+                      <option value="5" selected>៥ សំណួរ (រហ័ស ៥ នាទី)</option>
+                      <option value="10">១០ សំណួរ (មធ្យម ១០ នាទី)</option>
+                      <option value="15">១៥ សំណួរ (ពេញលេញ)</option>
+                    </select>
+                  </div>
+
+                  <button class="btn btn-primary btn-lg w-100 py-3 font-bold" id="btnStartClassQuiz">
+                    <i class="fa-solid fa-play"></i> ចាប់ផ្តើម Quiz ឥឡូវនេះ
+                  </button>
+                </div>
+              </div>
+
+              <!-- Active Quiz View -->
+              <div id="quizActiveView" style="display: none;" class="quiz-active-wrap">
+                <div class="quiz-top-bar d-flex justify-content-between align-items-center mb-4">
+                  <div>
+                    <span class="badge badge-primary font-bold" id="quizSubjectTag">គណិតវិទ្យា</span>
+                    <span class="text-muted ms-2 font-bold" id="quizProgressText">សំណួរទី 1 / 5</span>
+                  </div>
+                  <div class="quiz-timer-box" id="quizTimerDisplay">20</div>
+                </div>
+
+                <div class="progress mb-4" style="height: 8px;">
+                  <div class="progress-bar bg-primary" id="quizProgressBar" style="width: 20%;"></div>
+                </div>
+
+                <div class="quiz-question-box mb-4">
+                  <h3 class="quiz-q-title font-khmer" id="quizQuestionText">តើសមីការ 2x + 6 = 14 មានឬស x ស្មើនឹងប៉ុន្មាន?</h3>
+                </div>
+
+                <div class="quiz-options-grid" id="quizOptionsGrid"></div>
+              </div>
+
+              <!-- Result View -->
+              <div id="quizResultView" style="display: none;" class="quiz-result-wrap text-center py-5">
+                <div class="result-badge-icon mb-3">
+                  <i class="fa-solid fa-award fa-4x text-warning"></i>
+                </div>
+                <h2 class="moul-title text-primary mb-2">លទ្ធផលនៃការធ្វើ Quiz</h2>
+                <h3 class="font-bold text-success display-5 my-3" id="quizFinalScoreText">40 / 50 ពិន្ទុ (80%)</h3>
+                <p class="font-khmer text-muted lead mb-4" id="quizResultComment">អស្ចារ្យណាស់! ឆ្លើយត្រូវស្ទើរតែទាំងអស់!</p>
+
+                <button class="btn btn-primary btn-lg" id="btnQuizRestart">
+                  <i class="fa-solid fa-rotate-right"></i> ធ្វើ Quiz សាជាថ្មី
+                </button>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- TAB: STUDENT HEALTH & BMI TRACKER -->
+        <section class="tab-content" id="tab-health">
+          <div class="content-card">
+            <div class="card-header-flex">
+              <div class="header-title-box">
+                <i class="fa-solid fa-heart-pulse text-danger"></i>
+                <div>
+                  <h3 class="card-title">តាមដានសុខភាព និងការលូតលាស់សិស្ស (Student Health & BMI)</h3>
+                  <p class="text-muted font-khmer">កត់ត្រាកម្ពស់ ទម្ងន់ គណនា BMI ស្វ័យប្រវត្ត ក្រុមឈាម និងប្រវត្តិអាឡែហ្ស៊ី</p>
+                </div>
+              </div>
+              <div class="action-buttons-wrap">
+                <button class="btn btn-success btn-sm" id="btnExportHealthExcel">
+                  <i class="fa-solid fa-file-excel"></i> នាំចេញបញ្ជី Excel
+                </button>
+              </div>
+            </div>
+
+            <div class="card-body">
+              <!-- Health KPI Grid -->
+              <div class="tb-stats-grid">
+                <div class="kpi-card card-primary">
+                  <div class="kpi-icon-box"><i class="fa-solid fa-ruler-vertical"></i></div>
+                  <div class="kpi-content">
+                    <span class="kpi-title">កម្ពស់មធ្យមថ្នាក់</span>
+                    <h3 id="healthAvgHeight">154.5 cm</h3>
+                  </div>
+                </div>
+                <div class="kpi-card card-info">
+                  <div class="kpi-icon-box"><i class="fa-solid fa-weight-scale"></i></div>
+                  <div class="kpi-content">
+                    <span class="kpi-title">ទម្ងន់មធ្យមថ្នាក់</span>
+                    <h3 id="healthAvgWeight">43.8 kg</h3>
+                  </div>
+                </div>
+                <div class="kpi-card card-success">
+                  <div class="kpi-icon-box"><i class="fa-solid fa-heart"></i></div>
+                  <div class="kpi-content">
+                    <span class="kpi-title">អត្រា BMI ស្តង់ដារល្អ</span>
+                    <h3 id="healthNormalRate">88%</h3>
+                  </div>
+                </div>
+                <div class="kpi-card card-danger">
+                  <div class="kpi-icon-box"><i class="fa-solid fa-hand-dots"></i></div>
+                  <div class="kpi-content">
+                    <span class="kpi-title">សិស្សមានអាឡែហ្ស៊ី</span>
+                    <h3 id="healthAllergyCount">1 នាក់</h3>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Health Matrix Table -->
+              <div class="table-responsive">
+                <table class="data-table">
+                  <thead>
+                    <tr>
+                      <th style="width: 50px;">ល.រ</th>
+                      <th style="width: 110px;">អត្តលេខ</th>
+                      <th>ឈ្មោះសិស្ស</th>
+                      <th style="width: 70px; text-align: center;">ភេទ</th>
+                      <th style="width: 100px; text-align: center;">កម្ពស់</th>
+                      <th style="width: 100px; text-align: center;">ទម្ងន់</th>
+                      <th style="width: 90px; text-align: center;">BMI</th>
+                      <th style="width: 180px; text-align: center;">ស្ថានភាពសុខភាព</th>
+                      <th style="width: 90px; text-align: center;">ក្រុមឈាម</th>
+                      <th>ប្រវត្តិអាឡែហ្ស៊ី</th>
+                      <th style="width: 90px; text-align: center;">សកម្មភាព</th>
+                    </tr>
+                  </thead>
+                  <tbody id="studentHealthTableBody"></tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- TAB: DIGITAL CLASS ELECTION & VOTING -->
+        <section class="tab-content" id="tab-election">
+          <div class="content-card">
+            <div class="card-header-flex">
+              <div class="header-title-box">
+                <i class="fa-solid fa-check-to-slot text-success"></i>
+                <div>
+                  <h3 class="card-title">ការបោះឆ្នោតជ្រើសរើសគណៈកម្មការថ្នាក់ (Digital Class Election)</h3>
+                  <p class="text-muted font-khmer">ការបោះឆ្នោតប្រជាធិបតេយ្យក្នុងថ្នាក់រៀន បង្ហាញលទ្ធផល និងក្រាហ្វិក Live</p>
+                </div>
+              </div>
+              <div class="action-buttons-wrap">
+                <button class="btn btn-primary btn-sm" id="btnOpenNewElection">
+                  <i class="fa-solid fa-plus"></i> បង្កើតការបោះឆ្នោតថ្មី
+                </button>
+              </div>
+            </div>
+
+            <div class="card-body">
+              <div id="electionsContainer"></div>
+            </div>
+          </div>
+        </section>
+
+        <!-- TAB: GAMIFICATION & BADGES (ផ្កាយ & ផ្លាកសញ្ញាលើកទឹកចិត្ត) -->
+        <section class="tab-content" id="tab-gamification">
+          <div class="content-card">
+            <div class="card-header-flex">
+              <div class="header-title-box">
+                <i class="fa-solid fa-star text-warning"></i>
+                <div>
+                  <h3 class="card-title">ប្រព័ន្ធផ្កាយលើកទឹកចិត្ត & ផ្លាកសញ្ញាកិត្តិយស (Classroom Gamification)</h3>
+                  <p class="text-muted font-khmer">ផ្តល់ពិន្ទុផ្កាយលើកទឹកចិត្ត Badges ស្មារតីសាមគ្គីភាព និងតារាងកិត្តិយស Leaderboard</p>
+                </div>
+              </div>
+              <div class="action-buttons-wrap">
+                <button class="btn btn-primary btn-sm" id="btnOpenAwardModal">
+                  <i class="fa-solid fa-award"></i> ផ្ដល់ផ្កាយ & Badges ថ្មី
+                </button>
+              </div>
+            </div>
+
+            <div class="card-body">
+              <!-- Top 3 Podium -->
+              <h4 class="font-khmer text-primary mb-3 text-center"><i class="fa-solid fa-trophy text-warning"></i> តារាងកិត្តិយសកំពូលតារាប្រចាំសប្តាហ៍ (Weekly Top Stars)</h4>
+              <div class="podium-container mb-4" id="gamificationPodium"></div>
+
+              <!-- Badges Category Overview -->
+              <h4 class="font-khmer text-primary mb-3"><i class="fa-solid fa-certificate text-accent"></i> ប្រភេទផ្លាកសញ្ញាកិត្តិយសក្នុងថ្នាក់ (Badges)</h4>
+              <div class="badges-overview-grid mb-4" id="gamificationBadgeGrid"></div>
+
+              <!-- Leaderboard Table -->
+              <div class="d-flex justify-content-between align-items-center mb-3 flex-wrap gap-2">
+                <h4 class="font-khmer text-primary mb-0"><i class="fa-solid fa-ranking-star"></i> តារាងពិន្ទុសរុបសិស្សទាំងអស់ (Leaderboard)</h4>
+                <input type="text" id="gamificationSearch" class="form-input-sm" placeholder="ស្វែងរកតាមឈ្មោះសិស្ស..." style="min-width: 220px;">
+              </div>
+              <div class="table-responsive mb-4">
+                <table class="data-table">
+                  <thead>
+                    <tr>
+                      <th style="width: 60px; text-align: center;">ចំណាត់ថ្នាក់</th>
+                      <th style="width: 100px;">អត្តលេខ</th>
+                      <th>ឈ្មោះសិស្ស</th>
+                      <th style="width: 120px; text-align: center;">ពិន្ទុផ្កាយសរុប</th>
+                      <th style="width: 120px; text-align: center;">សកម្មភាពជាប់លាប់</th>
+                      <th>ផ្លាកសញ្ញាដែលទទួលបាន</th>
+                      <th style="width: 110px; text-align: center;">សកម្មភាព</th>
+                    </tr>
+                  </thead>
+                  <tbody id="gamificationLeaderboardBody"></tbody>
+                </table>
+              </div>
+
+              <!-- Recent Activity History -->
+              <h4 class="font-khmer text-primary mb-2"><i class="fa-solid fa-clock-rotate-left"></i> ប្រវត្តិនៃការផ្ដល់រង្វាន់ថ្មីៗ</h4>
+              <div class="table-responsive">
+                <table class="data-table">
+                  <thead>
+                    <tr>
+                      <th style="width: 50px;">ល.រ</th>
+                      <th style="width: 140px;">កាលបរិច្ឆេទ</th>
+                      <th>ឈ្មោះសិស្ស</th>
+                      <th>ផ្លាកសញ្ញា / រង្វាន់</th>
+                      <th style="width: 100px; text-align: center;">ពិន្ទុទទួលបាន</th>
+                    </tr>
+                  </thead>
+                  <tbody id="gamificationHistoryBody"></tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- TAB: CLASSROOM FUND & TREASURY (មូលនិធិថ្នាក់រៀន & ចំណូល-ចំណាយ) -->
+        <section class="tab-content" id="tab-fund">
+          <div class="content-card">
+            <div class="card-header-flex">
+              <div class="header-title-box">
+                <i class="fa-solid fa-sack-dollar text-success"></i>
+                <div>
+                  <h3 class="card-title">គ្រប់គ្រងមូលនិធិថ្នាក់រៀន & ចំណូល-ចំណាយ (Classroom Fund & Treasury)</h3>
+                  <p class="text-muted font-khmer">តាមដានថវិកាថ្នាក់រៀន ការបង់វិភាគទានសិស្ស ចំណូល ចំណាយ និងរបាយការណ៍តម្លាភាព</p>
+                </div>
+              </div>
+              <div class="action-buttons-wrap">
+                <button class="btn btn-outline btn-sm" id="btnPrintFundReport">
+                  <i class="fa-solid fa-print"></i> បោះពុម្ពរបាយការណ៍
+                </button>
+                <button class="btn btn-success btn-sm" id="btnExportFundExcel">
+                  <i class="fa-solid fa-file-excel"></i> នាំចេញ Excel
+                </button>
+                <button class="btn btn-primary btn-sm" id="btnOpenAddFundModal">
+                  <i class="fa-solid fa-plus"></i> កត់ត្រាប្រតិបត្តិការថ្មី
+                </button>
+              </div>
+            </div>
+
+            <div class="card-body">
+              <!-- KPI Balance Cards -->
+              <div class="fund-stats-grid mb-4">
+                <div class="kpi-card card-primary">
+                  <div class="kpi-icon-box"><i class="fa-solid fa-vault"></i></div>
+                  <div class="kpi-content">
+                    <span class="kpi-title">សមតុល្យមូលនិធិបច្ចុប្បន្ន</span>
+                    <h3 id="fundCurrentBalance" class="text-primary font-mono">210,000 ៛</h3>
+                  </div>
+                </div>
+                <div class="kpi-card card-success">
+                  <div class="kpi-icon-box"><i class="fa-solid fa-arrow-down-left"></i></div>
+                  <div class="kpi-content">
+                    <span class="kpi-title">ចំណូលសរុប</span>
+                    <h3 id="fundTotalIncome" class="text-success font-mono">310,000 ៛</h3>
+                  </div>
+                </div>
+                <div class="kpi-card card-danger">
+                  <div class="kpi-icon-box"><i class="fa-solid fa-arrow-up-right"></i></div>
+                  <div class="kpi-content">
+                    <span class="kpi-title">ចំណាយសរុប</span>
+                    <h3 id="fundTotalExpense" class="text-danger font-mono">100,000 ៛</h3>
+                  </div>
+                </div>
+                <div class="kpi-card card-info">
+                  <div class="kpi-icon-box"><i class="fa-solid fa-receipt"></i></div>
+                  <div class="kpi-content">
+                    <span class="kpi-title">ប្រតិបត្តិការសរុប</span>
+                    <h3 id="fundTotalTransactions">5 ប្រតិបត្តិការ</h3>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Transactions Filter & Table -->
+              <div class="d-flex justify-content-between align-items-center mb-3 flex-wrap gap-2">
+                <h4 class="font-khmer text-primary mb-0"><i class="fa-solid fa-list-check"></i> កំណត់ត្រាប្រតិបត្តិការចំណូល-ចំណាយ</h4>
+                <div class="d-flex gap-2">
+                  <select id="fundTypeFilter" class="form-select-sm" style="min-width: 140px;">
+                    <option value="all">ទាំងអស់ (ចំណូល/ចំណាយ)</option>
+                    <option value="income">ចំណូល (+)</option>
+                    <option value="expense">ចំណាយ (-)</option>
+                  </select>
+                  <input type="text" id="fundSearchInput" class="form-input-sm" placeholder="ស្វែងរកប្រតិបត្តិការ..." style="min-width: 200px;">
+                </div>
+              </div>
+
+              <div class="table-responsive mb-4">
+                <table class="data-table">
+                  <thead>
+                    <tr>
+                      <th style="width: 50px;">ល.រ</th>
+                      <th style="width: 110px;">កាលបរិច្ឆេទ</th>
+                      <th style="width: 90px; text-align: center;">ប្រភេទ</th>
+                      <th>ជំពូក/ប្រភេទ</th>
+                      <th>បរិយាយ / កត់ត្រាដោយ</th>
+                      <th style="width: 140px; text-align: right;">ចំនួនទឹកប្រាក់</th>
+                      <th style="width: 80px; text-align: center;">សកម្មភាព</th>
+                    </tr>
+                  </thead>
+                  <tbody id="fundTransactionsTableBody"></tbody>
+                </table>
+              </div>
+
+              <!-- Student Fee / Monthly Contribution Tracker -->
+              <div class="d-flex justify-content-between align-items-center mb-2">
+                <h4 class="font-khmer text-primary mb-0"><i class="fa-solid fa-users"></i> បញ្ជីតាមដានការបង់វិភាគទានប្រចាំខែរបស់សិស្ស</h4>
+                <span class="badge badge-soft-primary" id="fundContributionStatusBadge">បានបង់ ៤២ / ៤២ នាក់</span>
+              </div>
+              <div class="table-responsive">
+                <table class="data-table">
+                  <thead>
+                    <tr>
+                      <th style="width: 50px;">ល.រ</th>
+                      <th style="width: 110px;">អត្តលេខ</th>
+                      <th>ឈ្មោះសិស្ស</th>
+                      <th style="width: 80px; text-align: center;">ភេទ</th>
+                      <th style="width: 180px; text-align: center;">ស្ថានភាពបង់វិភាគទាន</th>
+                      <th style="width: 140px; text-align: center;">សកម្មភាព</th>
+                    </tr>
+                  </thead>
+                  <tbody id="fundStudentChecklistBody"></tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- TAB: DIGITAL TEACHER'S LOGBOOK (សៀវភៅកិច្ចតែងការ & កំណត់ត្រាបង្រៀន) -->
+        <section class="tab-content" id="tab-logbook">
+          <div class="content-card">
+            <div class="card-header-flex">
+              <div class="header-title-box">
+                <i class="fa-solid fa-book-journal-whills text-primary"></i>
+                <div>
+                  <h3 class="card-title">សៀវភៅកិច្ចតែងការ & កំណត់ត្រាបង្រៀនប្រចាំថ្ងៃ (Digital Teacher's Logbook)</h3>
+                  <p class="text-muted font-khmer">កត់ត្រាវត្ថុបំណងមេរៀន សកម្មភាពបង្រៀន កិច្ចការផ្ទះ និងការឆ្លុះបញ្ចាំងវាយតម្លៃ</p>
+                </div>
+              </div>
+              <div class="action-buttons-wrap">
+                <button class="btn btn-outline btn-sm" id="btnPrintLogbook">
+                  <i class="fa-solid fa-print"></i> បោះពុម្ពសៀវភៅបន្ទុកថ្នាក់
+                </button>
+                <button class="btn btn-primary btn-sm" id="btnOpenAddLogbookModal">
+                  <i class="fa-solid fa-plus"></i> បន្ថែមកំណត់ត្រាបង្រៀនថ្មី
+                </button>
+              </div>
+            </div>
+
+            <div class="card-body">
+              <!-- Filter Controls -->
+              <div class="d-flex justify-content-between align-items-center mb-4 flex-wrap gap-2">
+                <div class="d-flex gap-2">
+                  <select id="logbookSubjectFilter" class="form-select-sm" style="min-width: 180px;"></select>
+                  <input type="text" id="logbookSearchInput" class="form-input-sm" placeholder="ស្វែងរកតាមមេរៀន, វត្ថុបំណង..." style="min-width: 220px;">
+                </div>
+              </div>
+
+              <!-- Logbook List Container -->
+              <div id="logbookListContainer"></div>
+            </div>
+          </div>
+        </section>
+
+        <!-- TAB: CLASS RESOURCE HUB & E-LIBRARY (ឃ្លាំងឯកសារមេរៀន & E-Library) -->
+        <section class="tab-content" id="tab-resources">
+          <div class="content-card">
+            <div class="card-header-flex">
+              <div class="header-title-box">
+                <i class="fa-solid fa-folder-open text-info"></i>
+                <div>
+                  <h3 class="card-title">ឃ្លាំងឯកសារមេរៀន & E-Library ថ្នាក់រៀន (Class Resource Hub)</h3>
+                  <p class="text-muted font-khmer">ចែករំលែកស្លាយបទបង្ហាញ PDF មេរៀនសង្ខេប កម្រងលំហាត់ និងវីដេអូពន្យល់</p>
+                </div>
+              </div>
+              <div class="action-buttons-wrap">
+                <button class="btn btn-primary btn-sm" id="btnOpenAddResourceModal">
+                  <i class="fa-solid fa-cloud-arrow-up"></i> បង្ហោះឯកសារមេរៀនថ្មី
+                </button>
+              </div>
+            </div>
+
+            <div class="card-body">
+              <!-- Filter Bar -->
+              <div class="d-flex justify-content-between align-items-center mb-4 flex-wrap gap-2">
+                <div class="d-flex gap-2 flex-wrap">
+                  <select id="resourceSubjectFilter" class="form-select-sm" style="min-width: 160px;"></select>
+                  <select id="resourceTypeFilter" class="form-select-sm" style="min-width: 140px;">
+                    <option value="all">ប្រភេទឯកសារទាំងអស់</option>
+                    <option value="pdf">ឯកសារ PDF</option>
+                    <option value="slide">ស្លាយ Slide</option>
+                    <option value="worksheet">កម្រងលំហាត់ Worksheet</option>
+                    <option value="video">វីដេអូ Video HD</option>
+                  </select>
+                </div>
+                <input type="text" id="resourceSearchInput" class="form-input-sm" placeholder="ស្វែងរកឯកសារ..." style="min-width: 200px;">
+              </div>
+
+              <!-- Resources Grid Container -->
+              <div class="resources-grid" id="resourcesGridContainer"></div>
+            </div>
+          </div>
+        </section>
+      </div>
+    </main>
+  </div>
+
+  <!-- ==================== MODALS ==================== -->
+
+  <!-- Modal 1: Add / Edit Student -->
+  <div class="modal-overlay" id="studentModal">
+    <div class="modal-container">
+      <div class="modal-header">
+        <h3 class="modal-title" id="studentModalTitle"><i class="fa-solid fa-user-plus text-primary"></i> បន្ថែមសិស្សថ្មី</h3>
+        <button class="btn-icon modal-close-btn" onclick="closeModal('studentModal')"><i class="fa-solid fa-xmark"></i></button>
+      </div>
+      <form id="studentForm">
+        <input type="hidden" id="studentFormIndex" value="-1">
+        <div class="modal-body">
+          <div class="form-avatar-picker-wrap">
+            <img src="https://api.dicebear.com/7.x/bottts/svg?seed=newstudent" id="formAvatarPreview" alt="Student Preview" class="form-avatar-preview">
+            <div class="avatar-controls">
+              <label class="form-label">រូបថតសិស្ស (Avatar / URL)</label>
+              <div class="input-group">
+                <input type="text" id="studentPhotoUrl" class="form-input" placeholder="URL រូបភាព ឬជ្រើសរើស Avatar">
+                <button type="button" class="btn btn-outline btn-sm" id="randomizeAvatarBtn">🎲 ប្តូររូប</button>
+              </div>
+            </div>
+          </div>
+
+          <div class="form-row-2">
+            <div class="form-group">
+              <label for="studentIdInput" class="required-label">អត្តលេខសិស្ស</label>
+              <input type="text" id="studentIdInput" class="form-input" placeholder="ឧ. STU-8A-043" required>
+            </div>
+            <div class="form-group">
+              <label for="studentClassInput" class="required-label">ថ្នាក់រៀន</label>
+              <select id="studentClassInput" class="form-select" required>
+                <option value="7A">ថ្នាក់ទី ៧ A</option>
+                <option value="7B">ថ្នាក់ទី ៧ B</option>
+                <option value="8A" selected>ថ្នាក់ទី ៨ A</option>
+                <option value="8B">ថ្នាក់ទី ៨ B</option>
+                <option value="9A">ថ្នាក់ទី ៩ A</option>
+                <option value="9B">ថ្នាក់ទី ៩ B</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="form-row-2">
+            <div class="form-group">
+              <label for="studentKhmerName" class="required-label">គោត្តនាម និងនាម (ខ្មែរ)</label>
+              <input type="text" id="studentKhmerName" class="form-input" placeholder="ឧ. សុខា មុនីរត្ន" required>
+            </div>
+            <div class="form-group">
+              <label for="studentLatinName" class="required-label">ឈ្មោះជាអក្សរឡាតាំង</label>
+              <input type="text" id="studentLatinName" class="form-input" placeholder="ឧ. SOKHA MONYROTH" required>
+            </div>
+          </div>
+
+          <div class="form-row-4">
+            <div class="form-group">
+              <label for="studentGenderSelect" class="required-label">ភេទ</label>
+              <select id="studentGenderSelect" class="form-select" required>
+                <option value="ស្រី">ស្រី (Female)</option>
+                <option value="ប្រុស">ប្រុស (Male)</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label for="studentDobInput" class="required-label">ថ្ងៃខែឆ្នាំកំណើត</label>
+              <input type="date" id="studentDobInput" class="form-input" required>
+            </div>
+            <div class="form-group">
+              <label for="studentStatusSelect">ស្ថានភាព</label>
+              <select id="studentStatusSelect" class="form-select">
+                <option value="កំពុងរៀន">កំពុងរៀន</option>
+                <option value="ផ្អាកការសិក្សា">ផ្អាកការសិក្សា</option>
+                <option value="ផ្ទេរចេញ">ផ្ទេរចេញ</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label for="studentPhoneInput"><i class="fa-solid fa-mobile-screen text-info"></i> ទូរស័ព្ទសិស្ស</label>
+              <input type="text" id="studentPhoneInput" class="form-input" placeholder="ឧ. 012 334 455">
+            </div>
+          </div>
+
+          <!-- Section: ទីកន្លែងកំណើត (Place of Birth) -->
+          <div class="form-section-divider">
+            <i class="fa-solid fa-hospital-user text-primary"></i> ទីកន្លែងកំណើត (Place of Birth)
+          </div>
+          <div class="form-row-4">
+            <div class="form-group">
+              <label for="studentPobVillage">ភូមិកំណើត</label>
+              <input type="text" id="studentPobVillage" class="form-input" placeholder="ឧ. ភូមិ១ / ព្រែកតាពៅ">
+            </div>
+            <div class="form-group">
+              <label for="studentPobCommune">ឃុំ / សង្កាត់</label>
+              <input type="text" id="studentPobCommune" class="form-input" placeholder="ឧ. ទឹកល្អក់១ / ដើមមៀន">
+            </div>
+            <div class="form-group">
+              <label for="studentPobDistrict">ស្រុក / ខណ្ឌ</label>
+              <input type="text" id="studentPobDistrict" class="form-input" placeholder="ឧ. ទួលគោក / ក្រុងតាខ្មៅ">
+            </div>
+            <div class="form-group">
+              <label for="studentPobProvince">ខេត្ត / រាជធានី</label>
+              <input type="text" id="studentPobProvince" class="form-input" placeholder="ឧ. រាជធានីភ្នំពេញ / កណ្តាល">
+            </div>
+          </div>
+
+          <!-- Section: អាសយដ្ឋានបច្ចុប្បន្ន (Current Address) -->
+          <div class="form-section-divider">
+            <i class="fa-solid fa-location-dot text-danger"></i> អាសយដ្ឋានបច្ចុប្បន្ន (Current Address)
+          </div>
+          <div class="form-row-4">
+            <div class="form-group">
+              <label for="studentCurVillage">ភូមិបច្ចុប្បន្ន</label>
+              <input type="text" id="studentCurVillage" class="form-input" placeholder="ឧ. ភូមិ២ / ប៉ប្រក">
+            </div>
+            <div class="form-group">
+              <label for="studentCurCommune">ឃុំ / សង្កាត់</label>
+              <input type="text" id="studentCurCommune" class="form-input" placeholder="ឧ. ទឹកល្អក់១ / កាកាប">
+            </div>
+            <div class="form-group">
+              <label for="studentCurDistrict">ស្រុក / ខណ្ឌ</label>
+              <input type="text" id="studentCurDistrict" class="form-input" placeholder="ឧ. ទួលគោក / ពោធិ៍សែនជ័យ">
+            </div>
+            <div class="form-group">
+              <label for="studentCurProvince">ខេត្ត / រាជធានី</label>
+              <input type="text" id="studentCurProvince" class="form-input" placeholder="ឧ. រាជធានីភ្នំពេញ">
+            </div>
+          </div>
+
+          <!-- Section: ព័ត៌មានឪពុកម្តាយ & អាណាព្យាបាល (Parents & Contact) -->
+          <div class="form-section-divider">
+            <i class="fa-solid fa-users-rays text-success"></i> ព័ត៌មានឪពុកម្តាយ & អាណាព្យាបាល
+          </div>
+          <div class="form-row-2">
+            <div class="form-group">
+              <label for="studentFatherName"><i class="fa-solid fa-user-tie text-primary"></i> ឈ្មោះឪពុក</label>
+              <input type="text" id="studentFatherName" class="form-input" placeholder="ឧ. សុខា វិចិត្រ">
+            </div>
+            <div class="form-group">
+              <label for="studentFatherJob"><i class="fa-solid fa-briefcase text-primary"></i> មុខរបរឪពុក</label>
+              <input type="text" id="studentFatherJob" class="form-input" placeholder="ឧ. គ្រូបង្រៀន / មន្ត្រីរាជការ / អាជីវករ">
+            </div>
+          </div>
+
+          <div class="form-row-2">
+            <div class="form-group">
+              <label for="studentMotherName"><i class="fa-solid fa-person-dress text-accent"></i> ឈ្មោះម្តាយ</label>
+              <input type="text" id="studentMotherName" class="form-input" placeholder="ឧ. កែវ មុនីរត្ន">
+            </div>
+            <div class="form-group">
+              <label for="studentMotherJob"><i class="fa-solid fa-briefcase text-accent"></i> មុខរបរម្តាយ</label>
+              <input type="text" id="studentMotherJob" class="form-input" placeholder="ឧ. មេផ្ទះ / អាជីវករ / បុគ្គលិកក្រុមហ៊ុន">
+            </div>
+          </div>
+
+          <div class="form-row-2">
+            <div class="form-group">
+              <label for="studentParentPhone"><i class="fa-solid fa-phone text-success"></i> លេខទូរស័ព្ទឪពុកម្តាយ / អាណាព្យាបាល</label>
+              <input type="text" id="studentParentPhone" class="form-input" placeholder="ឧ. ០១២ ៨៨៨ ៩៩១">
+            </div>
+            <div class="form-group">
+              <label for="studentNoteInput"><i class="fa-solid fa-note-sticky text-warning"></i> ចំណាំផ្សេងៗ</label>
+              <input type="text" id="studentNoteInput" class="form-input" placeholder="ឧ. សិស្សពូកែ / ត្រូវការការលើកទឹកចិត្ត">
+            </div>
+          </div>
+        </div>
+
+        <div class="modal-footer">
+          <button type="button" class="btn btn-outline" onclick="closeModal('studentModal')">បោះបង់</button>
+          <button type="submit" class="btn btn-primary" id="saveStudentBtn">
+            <i class="fa-solid fa-floppy-disk"></i> រក្សាទុក
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Modal 2: View Student Profile & ID Card (with QR Code) -->
+  <div class="modal-overlay" id="studentCardModal">
+    <div class="modal-container modal-md">
+      <div class="modal-header">
+        <h3 class="modal-title"><i class="fa-solid fa-address-card text-accent"></i> កាតសិស្ស និង QR Code សម្គាល់ខ្លួន</h3>
+        <button class="btn-icon modal-close-btn" onclick="closeModal('studentCardModal')"><i class="fa-solid fa-xmark"></i></button>
+      </div>
+      <div class="modal-body">
+        <div class="student-id-card-render" id="printableStudentIdCard">
+          <div class="id-card-header">
+            <div class="id-school-title">អនុវិទ្យាល័យ ហ៊ុន សែន</div>
+            <div class="id-card-tag">ប័ណ្ណសម្គាល់ខ្លួនសិស្ស (STUDENT CARD)</div>
+          </div>
+          <div class="id-card-body">
+            <div class="id-photo-frame">
+              <img src="" id="idCardPhoto" alt="Student">
+            </div>
+            <div class="id-info-list">
+              <div class="id-name-kh" id="idCardNameKh">សុខា មុនីរត្ន</div>
+              <div class="id-name-en" id="idCardNameEn">SOKHA MONYROTH</div>
+              <div class="id-meta-row">
+                <span class="id-lbl">អត្តលេខ៖</span> <strong id="idCardId">STU-8A-001</strong>
+              </div>
+              <div class="id-meta-row">
+                <span class="id-lbl">ថ្នាក់ទី៖</span> <strong id="idCardClass">៨ A</strong> | 
+                <span class="id-lbl">ភេទ៖</span> <strong id="idCardGender">ស្រី</strong>
+              </div>
+              <div class="id-meta-row">
+                <span class="id-lbl">ថ្ងៃកំណើត៖</span> <span id="idCardDob">15-05-2012</span>
+              </div>
+              <div class="id-meta-row">
+                <span class="id-lbl">ទីកន្លែងកំណើត៖</span> <span id="idCardPob">ភ្នំពេញ</span>
+              </div>
+              <div class="id-meta-row">
+                <span class="id-lbl">អាសយដ្ឋាន៖</span> <span id="idCardAddress">ភ្នំពេញ</span>
+              </div>
+              <div class="id-meta-row">
+                <span class="id-lbl">ទូរស័ព្ទ៖</span> <span id="idCardPhone">០១២ ៨៨៨ ៩៩១</span>
+              </div>
+            </div>
+            <div class="id-qr-holder">
+              <div id="idCardQrCodeBox"></div>
+              <span class="qr-sub">Scan QR</span>
+            </div>
+          </div>
+          <div class="id-card-footer">
+            <div class="id-barcode-mock">
+              <div class="barcode-lines">||||| | |||| ||| ||||| || ||||</div>
+              <span class="barcode-sub">ឆ្នាំសិក្សា ២០២៥-២០២៦</span>
+            </div>
+            <div class="id-stamp-circle">
+              <i class="fa-solid fa-certificate"></i>
+              <span>ត្រាសាលា</span>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-outline" onclick="closeModal('studentCardModal')">បិទ</button>
+        <button type="button" class="btn btn-primary" id="printSingleIdCardBtn">
+          <i class="fa-solid fa-print"></i> បោះពុម្ពកាតសិស្ស
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal 3: Monthly Attendance Matrix -->
+  <div class="modal-overlay" id="monthlyAttendanceModal">
+    <div class="modal-container modal-xl">
+      <div class="modal-header">
+        <h3 class="modal-title"><i class="fa-solid fa-calendar-days text-success"></i> តារាងបូកសរុបវត្តមានប្រចាំខែ</h3>
+        <button class="btn-icon modal-close-btn" onclick="closeModal('monthlyAttendanceModal')"><i class="fa-solid fa-xmark"></i></button>
+      </div>
+      <div class="modal-body p-0">
+        <div class="monthly-matrix-toolbar p-3 border-bottom d-flex justify-content-between align-items-center">
+          <div class="d-flex align-items-center gap-2">
+            <label for="monthlyMatrixMonthSelect">ជ្រើសរើសខែ៖</label>
+            <select id="monthlyMatrixMonthSelect" class="form-select-sm">
+              <option value="10" selected>ខែ តុលា ២០២៥</option>
+              <option value="9">ខែ កញ្ញា ២០២៥</option>
+            </select>
+          </div>
+          <div class="matrix-legend d-flex gap-3">
+            <span><strong class="text-success">P</strong>: មក</span>
+            <span><strong class="text-warning">A</strong>: អវត្តមានឥតច្បាប់</span>
+            <span><strong class="text-info">L</strong>: មានច្បាប់</span>
+          </div>
+        </div>
+        <div class="table-responsive p-3" style="max-height: 60vh;">
+          <table class="data-table matrix-table" id="monthlyAttendanceMatrixTable">
+            <thead></thead>
+            <tbody id="monthlyAttendanceMatrixBody"></tbody>
+          </table>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-outline" onclick="closeModal('monthlyAttendanceModal')">បិទ</button>
+        <button type="button" class="btn btn-success" id="exportMonthlyMatrixExcelBtn">
+          <i class="fa-solid fa-file-excel"></i> នាំចេញ Excel
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal 4: Add Homework Assignment -->
+  <div class="modal-overlay" id="homeworkModal">
+    <div class="modal-container">
+      <div class="modal-header">
+        <h3 class="modal-title"><i class="fa-solid fa-book-medical text-primary"></i> ដាក់កិច្ចការផ្ទះថ្មី</h3>
+        <button class="btn-icon modal-close-btn" onclick="closeModal('homeworkModal')"><i class="fa-solid fa-xmark"></i></button>
+      </div>
+      <form id="homeworkForm">
+        <div class="modal-body">
+          <div class="form-row-2">
+            <div class="form-group">
+              <label for="hwSubjectSelect" class="required-label">មុខវិជ្ជា</label>
+              <select id="hwSubjectSelect" class="form-select" required></select>
+            </div>
+            <div class="form-group">
+              <label for="hwDueDateInput" class="required-label">កាលបរិច្ឆេទផុតកំណត់</label>
+              <input type="date" id="hwDueDateInput" class="form-input" required>
+            </div>
+          </div>
+          <div class="form-group">
+            <label for="hwTitleInput" class="required-label">ចំណងជើងកិច្ចការ</label>
+            <input type="text" id="hwTitleInput" class="form-input" placeholder="ឧ. លំហាត់សមីការដឺក្រេទី១..." required>
+          </div>
+          <div class="form-group">
+            <label for="hwDescInput" class="required-label">ការណែនាំ និងព័ត៌មានលម្អិត</label>
+            <textarea id="hwDescInput" class="form-textarea" rows="3" placeholder="ពិពណ៌នាអំពីទំព័រសៀវភៅ ឬលំហាត់ដែលត្រូវធ្វើ..." required></textarea>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-outline" onclick="closeModal('homeworkModal')">បោះបង់</button>
+          <button type="submit" class="btn btn-primary"><i class="fa-solid fa-floppy-disk"></i> ដាក់កិច្ចការ</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Modal 5: Homework Submission Checklist -->
+  <div class="modal-overlay" id="homeworkSubmissionModal">
+    <div class="modal-container modal-xl">
+      <div class="modal-header">
+        <h3 class="modal-title" id="subModalTitle"><i class="fa-solid fa-list-check text-primary"></i> តាមដានការប្រគល់កិច្ចការ</h3>
+        <button class="btn-icon modal-close-btn" onclick="closeModal('homeworkSubmissionModal')"><i class="fa-solid fa-xmark"></i></button>
+      </div>
+      <div class="modal-body p-0">
+        <div class="table-responsive p-3" style="max-height: 60vh;">
+          <table class="data-table">
+            <thead>
+              <tr>
+                <th style="width: 50px;">ល.រ</th>
+                <th style="width: 100px;">អត្តលេខ</th>
+                <th>ឈ្មោះសិស្ស</th>
+                <th style="width: 130px; text-align: center;">ស្ថានភាពប្រគល់</th>
+                <th style="width: 100px; text-align: center;">ពិន្ទុ (10)</th>
+                <th>ចំណាំ / មតិកែលម្អ</th>
+              </tr>
+            </thead>
+            <tbody id="hwSubmissionTableBody"></tbody>
+          </table>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-primary" onclick="closeModal('homeworkSubmissionModal'); showToast('បានកត់ត្រាការប្រគល់កិច្ចការរួចរាល់!', 'success');">
+          <i class="fa-solid fa-check"></i> រួចរាល់
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal 6: Telegram Parent Alert Share -->
+  <div class="modal-overlay" id="telegramModal">
+    <div class="modal-container modal-md">
+      <div class="modal-header">
+        <h3 class="modal-title"><i class="fa-brands fa-telegram text-info"></i> ផ្ញើដំណឹងទៅ Telegram អាណាព្យាបាល</h3>
+        <button class="btn-icon modal-close-btn" onclick="closeModal('telegramModal')"><i class="fa-solid fa-xmark"></i></button>
+      </div>
+      <div class="modal-body">
+        <div class="form-row-2">
+          <div class="form-group">
+            <label for="tgStudentSelect">ជ្រើសរើសសិស្ស</label>
+            <select id="tgStudentSelect" class="form-select"></select>
+          </div>
+          <div class="form-group">
+            <label for="tgMessageTypeSelect">ប្រភេទដំណឹង</label>
+            <select id="tgMessageTypeSelect" class="form-select">
+              <option value="grades">📊 លទ្ធផលពិន្ទុប្រចាំខែ</option>
+              <option value="absence">⚠️ ដំណឹងអវត្តមានប្រចាំថ្ងៃ</option>
+              <option value="homework">📚 ដំណឹងកិច្ចការផ្ទះ</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">គំរូអត្ថបទសារ (Message Preview)៖</label>
+          <div class="telegram-preview-box" id="telegramMessagePreview"></div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-outline" id="copyTelegramMsgBtn"><i class="fa-regular fa-copy"></i> ចម្លងសារ</button>
+        <button type="button" class="btn btn-info" id="sendTelegramMsgBtn"><i class="fa-brands fa-telegram"></i> បើកផ្ញើក្នុង Telegram</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal 7: Add Discipline Record -->
+  <div class="modal-overlay" id="disciplineModal">
+    <div class="modal-container">
+      <div class="modal-header">
+        <h3 class="modal-title"><i class="fa-solid fa-book-bookmark text-primary"></i> បន្ថែមកំណត់ត្រាវិន័យ / សកម្មភាព</h3>
+        <button class="btn-icon modal-close-btn" onclick="closeModal('disciplineModal')"><i class="fa-solid fa-xmark"></i></button>
+      </div>
+      <form id="disciplineForm">
+        <div class="modal-body">
+          <div class="form-group">
+            <label for="discStudentSelect" class="required-label">ជ្រើសរើសសិស្ស</label>
+            <select id="discStudentSelect" class="form-select" required></select>
+          </div>
+
+          <div class="form-row-2">
+            <div class="form-group">
+              <label for="discTypeSelect" class="required-label">ប្រភេទកំណត់ត្រា</label>
+              <select id="discTypeSelect" class="form-select" required>
+                <option value="praise">🌟 ការសរសើរ / អំពើល្អ (Praise)</option>
+                <option value="warning">⚠️ ការព្រមាន / ល្មើសវិន័យ (Warning)</option>
+                <option value="parent_contact">📞 ទំនាក់ទំនងអាណាព្យាបាល (Parent Contact)</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label for="discDateInput" class="required-label">កាលបរិច្ឆេទ</label>
+              <input type="date" id="discDateInput" class="form-input" required>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label for="discTitleInput" class="required-label">ចំណងជើងសង្ខេប</label>
+            <input type="text" id="discTitleInput" class="form-input" placeholder="ឧ. ជួយមិត្តភក្តិរៀន ឬ មកយឺតញឹកញាប់" required>
+          </div>
+
+          <div class="form-group">
+            <label for="discNotesInput" class="required-label">ព័ត៌មានលម្អិត</label>
+            <textarea id="discNotesInput" class="form-textarea" rows="3" placeholder="ពិពណ៌នាអំពីហេតុការណ៍ ឬវិធានការដោះស្រាយ..." required></textarea>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-outline" onclick="closeModal('disciplineModal')">បោះបង់</button>
+          <button type="submit" class="btn btn-primary"><i class="fa-solid fa-floppy-disk"></i> រក្សាទុក</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Modal 8: Seating Slot Detail -->
+  <div class="modal-overlay" id="seatingModal">
+    <div class="modal-container modal-md">
+      <div class="modal-header">
+        <h3 class="modal-title"><i class="fa-solid fa-chair text-primary"></i> ព័ត៌មានកៅអីអង្គុយសិស្ស</h3>
+        <button class="btn-icon modal-close-btn" id="closeSeatingModal"><i class="fa-solid fa-xmark"></i></button>
+      </div>
+      <div class="modal-body" id="seatingModalBody"></div>
+    </div>
+  </div>
+
+  <!-- Modal 9: Add Question to Bank -->
+  <div class="modal-overlay" id="addQuestionModal">
+    <div class="modal-container modal-lg">
+      <div class="modal-header">
+        <h3 class="modal-title"><i class="fa-solid fa-plus-circle text-primary"></i> បន្ថែមសំណួរទៅក្នុងធនាគារ</h3>
+        <button class="btn-icon modal-close-btn" id="closeAddQModal"><i class="fa-solid fa-xmark"></i></button>
+      </div>
+      <div class="modal-body">
+        <div class="form-row-3">
+          <div class="form-group">
+            <label class="required-label">មុខវិជ្ជា</label>
+            <select id="qModalSubject" class="form-select"></select>
+          </div>
+          <div class="form-group">
+            <label class="required-label">ប្រភេទសំណួរ</label>
+            <select id="qModalType" class="form-select">
+              <option value="mcq">ពហុជ្រើសរើស (MCQ)</option>
+              <option value="essay">សរសេររៀបរាប់ / ដោះស្រាយលំហាត់</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label class="required-label">ពិន្ទុសម្រាប់សំណួរនេះ</label>
+            <input type="number" id="qModalPoints" class="form-input" value="2" min="1" max="50">
+          </div>
+        </div>
+
+        <div class="form-group mb-3">
+          <label class="required-label">ខ្លឹមសារសំណួរ / ប្រធានលំហាត់</label>
+          <textarea id="qModalText" class="form-textarea" rows="3" placeholder="សរសេរខ្លឹមសារសំណួរនៅទីនេះ..."></textarea>
+        </div>
+
+        <!-- MCQ Options Box -->
+        <div id="mcqOptionsBox">
+          <label class="form-label font-khmer">ជម្រើសចម្លើយ (Options)៖</label>
+          <div class="form-row-2 mb-2">
+            <input type="text" id="qOptA" class="form-input" placeholder="ជម្រើស A">
+            <input type="text" id="qOptB" class="form-input" placeholder="ជម្រើស B">
+          </div>
+          <div class="form-row-2 mb-3">
+            <input type="text" id="qOptC" class="form-input" placeholder="ជម្រើស C">
+            <input type="text" id="qOptD" class="form-input" placeholder="ជម្រើស D">
+          </div>
+          <div class="form-group">
+            <label class="required-label">ចម្លើយត្រឹមត្រូវ</label>
+            <select id="qCorrectOpt" class="form-select">
+              <option value="0">ជម្រើស A</option>
+              <option value="1">ជម្រើស B</option>
+              <option value="2">ជម្រើស C</option>
+              <option value="3">ជម្រើស D</option>
+            </select>
+          </div>
+        </div>
+
+        <!-- Essay / Problem Answer Box -->
+        <div id="essayAnswerBox" style="display: none;">
+          <div class="form-group">
+            <label class="form-label font-khmer">ដំណោះស្រាយ ឬចម្លើយគំរូ (Answer Key)៖</label>
+            <textarea id="qEssayAnswer" class="form-textarea" rows="3" placeholder="បញ្ចូលអត្រាកំណែ ឬចម្លើយត្រឹមត្រូវ..."></textarea>
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-outline" onclick="document.getElementById('addQuestionModal').classList.remove('active')">បោះបង់</button>
+        <button type="button" class="btn btn-primary" id="btnSaveQuestion"><i class="fa-solid fa-floppy-disk"></i> រក្សាទុកសំណួរ</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal 10: Exam Paper Preview & Print -->
+  <div class="modal-overlay" id="examPreviewModal">
+    <div class="modal-container modal-xl">
+      <div class="modal-header">
+        <h3 class="modal-title"><i class="fa-solid fa-file-pdf text-danger"></i> គំរូវិញ្ញាសាប្រឡង និងកម្រងចម្លើយ</h3>
+        <button class="btn-icon modal-close-btn" id="closeExamPrevModal"><i class="fa-solid fa-xmark"></i></button>
+      </div>
+      <div class="modal-body p-0">
+        <div class="print-preview-container">
+          <div id="examPrintPreview"></div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-outline" onclick="document.getElementById('examPreviewModal').classList.remove('active')">បិទ</button>
+        <button type="button" class="btn btn-primary" id="btnPrintExamPaper"><i class="fa-solid fa-print"></i> បោះពុម្ពវិញ្ញាសា & Answer Key</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal 11: Student Books Checklist -->
+  <div class="modal-overlay" id="studentBooksModal">
+    <div class="modal-container modal-lg">
+      <div class="modal-header">
+        <h3 class="modal-title"><i class="fa-solid fa-book-bookmark text-success"></i> បញ្ជីសៀវភៅពុម្ពរបស់សិស្ស</h3>
+        <button class="btn-icon modal-close-btn" id="closeStudentBooksModal"><i class="fa-solid fa-xmark"></i></button>
+      </div>
+      <div class="modal-body" id="studentBooksModalBody"></div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-primary" onclick="document.getElementById('studentBooksModal').classList.remove('active')">រួចរាល់</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal 12: Assign Council Role -->
+  <div class="modal-overlay" id="assignRoleModal">
+    <div class="modal-container modal-md">
+      <div class="modal-header">
+        <h3 class="modal-title"><i class="fa-solid fa-user-gear text-primary"></i> ចាត់តាំងតួនាទីគណៈកម្មការថ្នាក់</h3>
+        <button class="btn-icon modal-close-btn" id="closeAssignRoleModal"><i class="fa-solid fa-xmark"></i></button>
+      </div>
+      <div class="modal-body" id="assignRoleModalBody"></div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-outline" onclick="document.getElementById('assignRoleModal').classList.remove('active')">បោះបង់</button>
+        <button type="button" class="btn btn-primary" id="btnSaveAssignedRole"><i class="fa-solid fa-floppy-disk"></i> រក្សាទុក</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal 13: Create Club -->
+  <div class="modal-overlay" id="createClubModal">
+    <div class="modal-container modal-md">
+      <div class="modal-header">
+        <h3 class="modal-title"><i class="fa-solid fa-plus-circle text-info"></i> បង្កើតក្លឹបសិក្សាថ្មី</h3>
+        <button class="btn-icon modal-close-btn" id="closeCreateClubModal"><i class="fa-solid fa-xmark"></i></button>
+      </div>
+      <div class="modal-body">
+        <div class="form-group mb-3">
+          <label class="required-label">ឈ្មោះក្លឹប (ខ្មែរ)</label>
+          <input type="text" id="clubNameInput" class="form-input" placeholder="ឧ. ក្លឹបវិទ្យាសាស្ត្រ និងស្រាវជ្រាវ">
+        </div>
+        <div class="form-group mb-3">
+          <label class="form-label">ឈ្មោះជាអង់គ្លេស (Optional)</label>
+          <input type="text" id="clubNameEnInput" class="form-input" placeholder="ឧ. Science & Research Club">
+        </div>
+        <div class="form-group mb-3">
+          <label class="required-label">ប្រធានក្លឹប (សិស្សដឹកនាំ)</label>
+          <select id="clubLeadSelect" class="form-select"></select>
+        </div>
+        <div class="form-group mb-3">
+          <label class="form-label">កាលវិភាគជួបប្រជុំ</label>
+          <input type="text" id="clubMeetingInput" class="form-input" placeholder="ឧ. រៀងរាល់រសៀលថ្ងៃសុក្រ ម៉ោង ២:០០">
+        </div>
+        <div class="form-group">
+          <label class="form-label">គោលបំណង និងសកម្មភាព</label>
+          <textarea id="clubDescInput" class="form-textarea" rows="3" placeholder="ពិពណ៌នាអំពីសកម្មភាពសំខាន់ៗរបស់ក្លឹប..."></textarea>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-outline" onclick="document.getElementById('createClubModal').classList.remove('active')">បោះបង់</button>
+        <button type="button" class="btn btn-primary" id="btnSaveNewClub"><i class="fa-solid fa-plus"></i> បង្កើតក្លឹប</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal 14: Club Members List -->
+  <div class="modal-overlay" id="clubMembersModal">
+    <div class="modal-container modal-lg">
+      <div class="modal-header">
+        <h3 class="modal-title"><i class="fa-solid fa-users text-primary"></i> បញ្ជីសមាជិកក្លឹបសិក្សា</h3>
+        <button class="btn-icon modal-close-btn" id="closeClubMembersModal"><i class="fa-solid fa-xmark"></i></button>
+      </div>
+      <div class="modal-body" id="clubMembersModalBody"></div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-primary" onclick="document.getElementById('clubMembersModal').classList.remove('active')">បិទ</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal 15: Edit Single Timetable Slot -->
+  <div class="modal-overlay" id="editTimetableSlotModal">
+    <div class="modal-container modal-md">
+      <div class="modal-header">
+        <h3 class="modal-title"><i class="fa-solid fa-pen-to-square text-primary"></i> កែប្រែម៉ោងសិក្សា</h3>
+        <button class="btn-icon modal-close-btn" id="closeTimetableSlotModal"><i class="fa-solid fa-xmark"></i></button>
+      </div>
+      <div class="modal-body">
+        <input type="hidden" id="editSlotIndex">
+        <input type="hidden" id="editSlotDayKey">
+        
+        <div class="alert alert-info mb-3">
+          <i class="fa-solid fa-clock"></i> <strong id="editSlotTimeInfo">ថ្ងៃចន្ទ • ម៉ោង 07:00 - 07:45</strong>
+        </div>
+
+        <div class="form-group mb-3">
+          <label class="required-label">មុខវិជ្ជាបង្រៀន</label>
+          <select id="slotSubjectSelect" class="form-select"></select>
+        </div>
+
+        <div class="form-group mb-3">
+          <label class="form-label">ឈ្មោះគ្រូបង្រៀនទទួលបន្ទុក</label>
+          <input type="text" id="slotTeacherInput" class="form-input" placeholder="ឧ. លោកគ្រូ សុខ ចាន់ថា">
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-outline text-danger" id="clearTimetableSlotBtn"><i class="fa-solid fa-trash"></i> លុបម៉ោងនេះ</button>
+        <button type="button" class="btn btn-primary" id="saveTimetableSlotBtn"><i class="fa-solid fa-floppy-disk"></i> រក្សាទុក</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal 15B: Edit Teacher Profile -->
+  <div class="modal-overlay" id="editTeacherModal">
+    <div class="modal-container modal-md">
+      <div class="modal-header">
+        <h3 class="modal-title"><i class="fa-solid fa-chalkboard-user text-primary"></i> កែប្រែព័ត៌មានលោកគ្រូ/អ្នកគ្រូ</h3>
+        <button class="btn-icon modal-close-btn" id="closeEditTeacherModal"><i class="fa-solid fa-xmark"></i></button>
+      </div>
+      <div class="modal-body">
+        <input type="hidden" id="editTeacherSubjectId">
+        
+        <div class="form-group mb-3">
+          <label class="required-label">មុខវិជ្ជាទទួលបន្ទុក</label>
+          <input type="text" id="editTeacherSubjectName" class="form-input" readonly style="background: var(--bg-app); font-weight: bold; color: var(--primary);">
+        </div>
+
+        <div class="form-group mb-3">
+          <label class="required-label">ឈ្មោះលោកគ្រូ / អ្នកគ្រូ (Teacher Name)</label>
+          <input type="text" id="editTeacherNameInput" class="form-input" placeholder="ឧ. លោកគ្រូ សុខ ចាន់ថា" required>
+        </div>
+
+        <div class="form-group mb-3">
+          <label class="form-label">លេខទូរស័ព្ទទាក់ទង (Phone Number)</label>
+          <input type="text" id="editTeacherPhoneInput" class="form-input" placeholder="ឧ. ០១២ ៣៤៥ ៦៧៨">
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-outline" onclick="closeModal('editTeacherModal')">បោះបង់</button>
+        <button type="button" class="btn btn-primary" id="saveTeacherProfileBtn"><i class="fa-solid fa-floppy-disk"></i> រក្សាទុកព័ត៌មានគ្រូ</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal 16: Full Weekly Timetable Editor -->
+  <div class="modal-overlay" id="fullTimetableModal">
+    <div class="modal-container modal-xl">
+      <div class="modal-header">
+        <h3 class="modal-title"><i class="fa-solid fa-table text-primary"></i> កែប្រែកាលវិភាគប្រចាំសប្តាហ៍ពេញលេញ</h3>
+        <button class="btn-icon modal-close-btn" id="closeFullTimetableModal"><i class="fa-solid fa-xmark"></i></button>
+      </div>
+      <div class="modal-body">
+        <div class="alert alert-warning mb-3">
+          <i class="fa-solid fa-circle-info"></i> លោកអ្នកអាចកែប្រែម៉ោងសិក្សា មុខវិជ្ជា និងឈ្មោះគ្រូបង្រៀនសម្រាប់ថ្ងៃនីមួយៗបានដោយសេរី។
+        </div>
+        <div id="fullTimetableFormContainer"></div>
+      </div>
+      <div class="modal-footer justify-content-between">
+        <button type="button" class="btn btn-outline text-danger" id="resetTimetableBtn"><i class="fa-solid fa-rotate-left"></i> កំណត់ឡើងវិញ</button>
+        <div class="d-flex gap-2">
+          <button type="button" class="btn btn-outline" onclick="document.getElementById('fullTimetableModal').classList.remove('active')">បោះបង់</button>
+          <button type="button" class="btn btn-primary" id="saveFullTimetableBtn"><i class="fa-solid fa-floppy-disk"></i> រក្សាទុកកាលវិភាគទាំងអស់</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal 17: Edit Student Health Record -->
+  <div class="modal-overlay" id="editHealthModal">
+    <div class="modal-container modal-md">
+      <div class="modal-header">
+        <h3 class="modal-title"><i class="fa-solid fa-heart-pulse text-danger"></i> កែប្រែកំណត់ត្រាសុខភាពសិស្ស</h3>
+        <button class="btn-icon modal-close-btn" id="closeEditHealthModal"><i class="fa-solid fa-xmark"></i></button>
+      </div>
+      <div class="modal-body">
+        <input type="hidden" id="editHealthStudentId">
+        <div class="alert alert-info mb-3">
+          <i class="fa-solid fa-user"></i> <strong id="editHealthStudentName">សុខា មុនីរត្ន (STU-8A-001)</strong>
+        </div>
+
+        <div class="form-row-2 mb-3">
+          <div class="form-group">
+            <label class="required-label">កម្ពស់ (cm)</label>
+            <input type="number" id="editHealthHeight" class="form-input" min="100" max="220" step="0.5" value="150">
+          </div>
+          <div class="form-group">
+            <label class="required-label">ទម្ងន់ (kg)</label>
+            <input type="number" id="editHealthWeight" class="form-input" min="20" max="150" step="0.5" value="40">
+          </div>
+        </div>
+
+        <div class="form-row-2 mb-3">
+          <div class="form-group">
+            <label class="form-label">ក្រុមឈាម</label>
+            <select id="editHealthBlood" class="form-select">
+              <option value="O+">O+</option>
+              <option value="A+">A+</option>
+              <option value="B+">B+</option>
+              <option value="AB+">AB+</option>
+              <option value="O-">O-</option>
+              <option value="A-">A-</option>
+              <option value="B-">B-</option>
+              <option value="AB-">AB-</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label class="form-label">កម្រិតគំហើញភ្នែក</label>
+            <input type="text" id="editHealthVision" class="form-input" placeholder="ឧ. ធម្មតា (10/10) ឬ ពាក់វ៉ែនតា">
+          </div>
+        </div>
+
+        <div class="form-group mb-3">
+          <label class="form-label">ប្រវត្តិជំងឺ / អាឡែហ្ស៊ី</label>
+          <input type="text" id="editHealthAllergies" class="form-input" placeholder="ឧ. គ្មាន ឬ អាឡែហ្ស៊ីគ្រឿងសមុទ្រ...">
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-outline" onclick="document.getElementById('editHealthModal').classList.remove('active')">បោះបង់</button>
+        <button type="button" class="btn btn-primary" id="btnSaveHealthRecord"><i class="fa-solid fa-floppy-disk"></i> រក្សាទុក</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal 18: Create Class Election -->
+  <div class="modal-overlay" id="newElectionModal">
+    <div class="modal-container modal-md">
+      <div class="modal-header">
+        <h3 class="modal-title"><i class="fa-solid fa-check-to-slot text-success"></i> បង្កើតការបោះឆ្នោតថ្នាក់ថ្មី</h3>
+        <button class="btn-icon modal-close-btn" id="closeNewElectionModal"><i class="fa-solid fa-xmark"></i></button>
+      </div>
+      <div class="modal-body">
+        <div class="form-group mb-3">
+          <label class="required-label">ប្រធានបទ / តំណែងបោះឆ្នោត</label>
+          <input type="text" id="elecTitleInput" class="form-input" placeholder="ឧ. ការបោះឆ្នោតជ្រើសរើសប្រធានថ្នាក់ឆមាសទី២">
+        </div>
+
+        <div class="form-group mb-3">
+          <label class="required-label">បេក្ខជនទី ១</label>
+          <select id="elecCand1" class="form-select"></select>
+        </div>
+
+        <div class="form-group mb-3">
+          <label class="required-label">បេក្ខជនទី ២</label>
+          <select id="elecCand2" class="form-select"></select>
+        </div>
+
+        <div class="form-group mb-3">
+          <label class="form-label">បេក្ខជនទី ៣ (Optional)</label>
+          <select id="elecCand3" class="form-select"></select>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-outline" onclick="document.getElementById('newElectionModal').classList.remove('active')">បោះបង់</button>
+        <button type="button" class="btn btn-primary" id="btnSaveNewElection"><i class="fa-solid fa-check"></i> បង្កើតការបោះឆ្នោត</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal 19: Award Badges & Star Points -->
+  <div class="modal-overlay" id="awardBadgeModal">
+    <div class="modal-container modal-lg">
+      <div class="modal-header">
+        <h3 class="modal-title"><i class="fa-solid fa-award text-warning"></i> ផ្ដល់ពិន្ទុផ្កាយលើកទឹកចិត្ត & ផ្លាកសញ្ញា (Award Badges)</h3>
+        <button class="btn-icon modal-close-btn" onclick="closeModal('awardBadgeModal')"><i class="fa-solid fa-xmark"></i></button>
+      </div>
+      <div class="modal-body">
+        <div class="form-group mb-3">
+          <label class="required-label font-khmer">ជ្រើសរើសសិស្សទទួលរង្វាន់</label>
+          <select id="awardStudentSelect" class="form-select"></select>
+        </div>
+
+        <div class="form-group mb-3">
+          <label class="required-label font-khmer">ជ្រើសរើសប្រភេទផ្លាកសញ្ញាលើកទឹកចិត្ត (Badges)</label>
+          <div class="award-choices-grid" id="awardBadgeChoices"></div>
+        </div>
+
+        <div class="form-group mb-2">
+          <label class="form-label font-khmer">ពិន្ទុផ្កាយបន្ថែមពិសេស (Custom Bonus Stars)</label>
+          <input type="number" id="awardCustomPoints" class="form-input" placeholder="ទុកទំនេរ ឬបញ្ចូលចំនួនពិន្ទុបន្ថែម (ឧ. 5)" min="1" max="50">
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-outline" onclick="closeModal('awardBadgeModal')">បោះបង់</button>
+        <button type="button" class="btn btn-primary" id="btnConfirmAwardBadge"><i class="fa-solid fa-star"></i> ផ្ដល់រង្វាន់ភ្លាមៗ 🎉</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal 20: Add Fund Transaction -->
+  <div class="modal-overlay" id="addFundModal">
+    <div class="modal-container modal-md">
+      <div class="modal-header">
+        <h3 class="modal-title"><i class="fa-solid fa-sack-dollar text-success"></i> កត់ត្រាប្រតិបត្តិការមូលនិធិថ្មី</h3>
+        <button class="btn-icon modal-close-btn" onclick="closeModal('addFundModal')"><i class="fa-solid fa-xmark"></i></button>
+      </div>
+      <form id="addFundForm">
+        <div class="modal-body">
+          <div class="form-row-2 mb-3">
+            <div class="form-group">
+              <label class="required-label">ប្រភេទប្រតិបត្តិការ</label>
+              <select id="fundTypeSelect" class="form-select" required>
+                <option value="income">ចំណូល (+) Income</option>
+                <option value="expense">ចំណាយ (-) Expense</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label class="required-label">ជំពូក / ប្រភេទ</label>
+              <select id="fundCategorySelect" class="form-select" required>
+                <option value="វិភាគទានថ្នាក់">វិភាគទានថ្នាក់រៀន</option>
+                <option value="សម្ភារៈថ្នាក់">សម្ភារៈសិក្សា & ក្តារខៀន</option>
+                <option value="អនាម័យ & បរិស្ថាន">អនាម័យ & បរិស្ថានថ្នាក់</option>
+                <option value="សប្បុរសជន">សប្បុរសជន / អាណាព្យាបាល</option>
+                <option value="សង្គមកិច្ច & សុខភាព">សង្គមកិច្ច & សុខភាពសិស្ស</option>
+                <option value="កម្មវិធីជួបជុំ">កម្មវិធីជួបជុំ & លើកទឹកចិត្ត</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="form-row-2 mb-3">
+            <div class="form-group">
+              <label class="required-label">ចំនួនទឹកប្រាក់ (រៀល ៛)</label>
+              <input type="number" id="fundAmountInput" class="form-input" placeholder="ឧ. 50000" min="500" step="500" required>
+            </div>
+            <div class="form-group">
+              <label class="required-label">កាលបរិច្ឆេទ</label>
+              <input type="date" id="fundDateInput" class="form-input" required>
+            </div>
+          </div>
+
+          <div class="form-group mb-3">
+            <label class="required-label">បរិយាយ / គោលបំណង</label>
+            <input type="text" id="fundDescInput" class="form-input" placeholder="ឧ. ទិញហ្វឺតសរសេរក្តារខៀន និងទឹកអាល់កុល" required>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">អ្នកកត់ត្រា / អ្នកទទួល</label>
+            <input type="text" id="fundRecorderInput" class="form-input" value="លោកគ្រូបន្ទុកថ្នាក់">
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-outline" onclick="closeModal('addFundModal')">បោះបង់</button>
+          <button type="submit" class="btn btn-primary"><i class="fa-solid fa-floppy-disk"></i> រក្សាទុក</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Modal 21: Add Daily Teaching Logbook -->
+  <div class="modal-overlay" id="addLogbookModal">
+    <div class="modal-container modal-lg">
+      <div class="modal-header">
+        <h3 class="modal-title"><i class="fa-solid fa-book-journal-whills text-primary"></i> បន្ថែមកំណត់ត្រាកិច្ចតែងការបង្រៀន</h3>
+        <button class="btn-icon modal-close-btn" onclick="closeModal('addLogbookModal')"><i class="fa-solid fa-xmark"></i></button>
+      </div>
+      <form id="addLogbookForm">
+        <div class="modal-body">
+          <div class="form-row-3 mb-3">
+            <div class="form-group">
+              <label class="required-label">កាលបរិច្ឆេទ</label>
+              <input type="date" id="logDateInput" class="form-input" required>
+            </div>
+            <div class="form-group">
+              <label class="required-label">ម៉ោងបង្រៀន</label>
+              <input type="text" id="logTimeSlotInput" class="form-input" value="07:00 - 08:30" required>
+            </div>
+            <div class="form-group">
+              <label class="required-label">មុខវិជ្ជា</label>
+              <select id="logSubjectSelect" class="form-select" required></select>
+            </div>
+          </div>
+
+          <div class="form-group mb-3">
+            <label class="required-label">ឈ្មោះគ្រូបង្រៀន</label>
+            <input type="text" id="logTeacherInput" class="form-input" placeholder="ឧ. លោកគ្រូ សុខ ចាន់ថា" required>
+          </div>
+
+          <div class="form-group mb-3">
+            <label class="required-label">ជំពូក និងចំណងជើងមេរៀន</label>
+            <input type="text" id="logChapterInput" class="form-input" placeholder="ឧ. ជំពូកទី ២៖ សមីការដឺក្រេទី១ មានមួយអញ្ញាត" required>
+          </div>
+
+          <div class="form-group mb-3">
+            <label class="required-label">វត្ថុបំណងមេរៀន (Lesson Objectives)</label>
+            <textarea id="logObjectiveInput" class="form-textarea" rows="2" placeholder="សិស្សចេះដោះស្រាយសមីការ..." required></textarea>
+          </div>
+
+          <div class="form-group mb-3">
+            <label class="required-label">សកម្មភាពបង្រៀន & រៀន (Teaching Activities)</label>
+            <textarea id="logActivitiesInput" class="form-textarea" rows="2" placeholder="ពន្យល់ទ្រឹស្តី, ដាក់លំហាត់អនុវត្តជាក្រុម..." required></textarea>
+          </div>
+
+          <div class="form-row-2 mb-3">
+            <div class="form-group">
+              <label class="form-label">កិច្ចការផ្ទះ & លំហាត់អនុវត្ត (Homework)</label>
+              <input type="text" id="logHomeworkInput" class="form-input" placeholder="ឧ. លំហាត់ទំព័រ ៤៥ លេខ ១, ២">
+            </div>
+            <div class="form-group">
+              <label class="form-label">ការឆ្លុះបញ្ចាំង & វាយតម្លៃ (Teacher's Reflection)</label>
+              <input type="text" id="logReflectionInput" class="form-input" placeholder="ឧ. សិស្សភាគច្រើនយល់បានល្អ">
+            </div>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-outline" onclick="closeModal('addLogbookModal')">បោះបង់</button>
+          <button type="submit" class="btn btn-primary"><i class="fa-solid fa-floppy-disk"></i> រក្សាទុកកិច្ចតែងការ</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Modal 22: Add Resource / E-Library File -->
+  <div class="modal-overlay" id="addResourceModal">
+    <div class="modal-container modal-md">
+      <div class="modal-header">
+        <h3 class="modal-title"><i class="fa-solid fa-cloud-arrow-up text-primary"></i> បង្ហោះឯកសារមេរៀនថ្មី</h3>
+        <button class="btn-icon modal-close-btn" onclick="closeModal('addResourceModal')"><i class="fa-solid fa-xmark"></i></button>
+      </div>
+      <form id="addResourceForm">
+        <div class="modal-body">
+          <div class="form-group mb-3">
+            <label class="required-label">ចំណងជើងឯកសារ</label>
+            <input type="text" id="resTitleInput" class="form-input" placeholder="ឧ. រូបមន្តសង្ខេបគណិតវិទ្យា ថ្នាក់ទី ៨" required>
+          </div>
+
+          <div class="form-row-2 mb-3">
+            <div class="form-group">
+              <label class="required-label">មុខវិជ្ជា</label>
+              <select id="resSubjectSelect" class="form-select" required></select>
+            </div>
+            <div class="form-group">
+              <label class="required-label">ប្រភេទឯកសារ</label>
+              <select id="resTypeSelect" class="form-select" required>
+                <option value="pdf">ឯកសារ PDF</option>
+                <option value="slide">ស្លាយ Slide (PowerPoint)</option>
+                <option value="worksheet">កម្រងលំហាត់ Worksheet</option>
+                <option value="video">វីដេអូមេរៀន Video HD</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="form-group mb-3">
+            <label class="form-label">អ្នករៀបចំ / អ្នកនិពន្ធ</label>
+            <input type="text" id="resAuthorInput" class="form-input" value="លោកគ្រូ សុខ ចាន់ថា">
+          </div>
+
+          <div class="form-group mb-3">
+            <label class="form-label">ការពិពណ៌នាសង្ខេប</label>
+            <textarea id="resDescInput" class="form-textarea" rows="2" placeholder="ពិពណ៌នាអំពីខ្លឹមសារសំខាន់នៃឯកសារនេះ..."></textarea>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-outline" onclick="closeModal('addResourceModal')">បោះបង់</button>
+          <button type="submit" class="btn btn-primary"><i class="fa-solid fa-upload"></i> បង្ហោះឯកសារ</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Modal 23: QR Code Resource Share -->
+  <div class="modal-overlay" id="qrResourceModal">
+    <div class="modal-container modal-sm text-center">
+      <div class="modal-header">
+        <h3 class="modal-title"><i class="fa-solid fa-qrcode text-primary"></i> ស្កេនទាញយកឯកសារ</h3>
+        <button class="btn-icon modal-close-btn" onclick="closeModal('qrResourceModal')"><i class="fa-solid fa-xmark"></i></button>
+      </div>
+      <div class="modal-body p-4">
+        <h4 id="qrResourceTitle" class="font-khmer text-primary mb-3">ឯកសារមេរៀន</h4>
+        <div class="d-flex justify-content-center mb-3">
+          <div id="qrResourceBox" style="padding: 10px; background: #fff; border-radius: 8px; border: 1px solid #cbd5e1; display: inline-block;"></div>
+        </div>
+        <p class="text-muted font-khmer font-sm mb-0">សិស្សអាចប្រើកាមេរ៉ាទូរស័ព្ទស្កេន QR Code នេះ ដើម្បីទាញយកឯកសារទៅរៀននៅផ្ទះបានភ្លាមៗ។</p>
+      </div>
+      <div class="modal-footer justify-content-center">
+        <button type="button" class="btn btn-primary" onclick="closeModal('qrResourceModal')">រួចរាល់</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal 24: Bulk Auto Telegram Sender -->
+  <div class="modal-overlay" id="bulkTelegramModal">
+    <div class="modal-container modal-lg">
+      <div class="modal-header">
+        <h3 class="modal-title"><i class="fa-brands fa-telegram text-info"></i> ផ្ញើដំណឹង Telegram ស្វ័យប្រវត្តទៅគ្រប់អាណាព្យាបាល (Bulk Auto Sender)</h3>
+        <button class="btn-icon modal-close-btn" onclick="closeModal('bulkTelegramModal')"><i class="fa-solid fa-xmark"></i></button>
+      </div>
+      <div class="modal-body">
+        <div class="alert alert-info mb-3">
+          <i class="fa-solid fa-robot"></i> ប្រព័ន្ធនឹងដំណើរការបញ្ជូនសារ Telegram ជូនអាណាព្យាបាលសិស្សទាំងអស់ដោយស្វ័យប្រវត្តក្នុង ១ ចុច ដោយមិនបាច់ Copy ផ្ញើម្ដងមួយៗ។
+        </div>
+
+        <div class="form-group mb-3">
+          <label class="required-label font-khmer">ជ្រើសរើសប្រភេទដំណឹងដែលត្រូវផ្ញើ</label>
+          <select id="bulkTgModeSelect" class="form-select">
+            <option value="all_grades">📊 ផ្ញើលទ្ធផលពិន្ទុ & ចំណាត់ថ្នាក់ប្រចាំខែទៅគ្រប់អាណាព្យាបាល (All 42 Students)</option>
+            <option value="absent_today">⚠️ ផ្ញើដំណឹងអវត្តមានថ្ងៃនេះទៅអាណាព្យាបាលសិស្សដែលខានរៀន</option>
+            <option value="top_honor">🏆 ផ្ញើដំណឹងអបអរសាទរប័ណ្ណសរសើរសិស្សឆ្នើម Top 5</option>
+          </select>
+        </div>
+
+        <div class="bulk-progress-wrap mb-3" id="bulkTgProgressBox" style="display: none;">
+          <div class="d-flex justify-content-between font-khmer font-sm">
+            <span id="bulkTgProgressText">កំពុងដំណើរការ...</span>
+            <span class="text-info font-bold"><i class="fa-solid fa-paper-plane fa-bounce"></i> Live Delivery</span>
+          </div>
+          <div class="bulk-progress-bar-container">
+            <div class="bulk-progress-bar" id="bulkTgProgressBar"></div>
+          </div>
+          <div class="bulk-delivery-log-box mt-3" id="bulkTgDeliveryLog"></div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-outline" onclick="closeModal('bulkTelegramModal')">បិទ</button>
+        <button type="button" class="btn btn-info" id="btnStartBulkTelegramSend">
+          <i class="fa-brands fa-telegram"></i> ចាប់ផ្តើមផ្ញើទៅគ្រប់អាណាព្យាបាល (1-Click Send)
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal 25: AI Khmer Voice Assistant & Attendance HUD -->
+  <div class="modal-overlay" id="voiceHudModal">
+    <div class="modal-container modal-md">
+      <div class="modal-header">
+        <h3 class="modal-title"><i class="fa-solid fa-microphone text-danger"></i> ជំនួយការបញ្ជា និងស្រង់វត្តមានដោយសំឡេង (AI Voice Assistant)</h3>
+        <button class="btn-icon modal-close-btn" onclick="VoiceModule.stopListening(); closeModal('voiceHudModal');"><i class="fa-solid fa-xmark"></i></button>
+      </div>
+      <div class="modal-body voice-hud-container">
+        <button type="button" class="voice-mic-toggle-btn listening" id="voiceModalMicToggle" title="ចុចដើម្បីបើក/បិទការស្តាប់">
+          <i class="fa-solid fa-microphone"></i>
+        </button>
+        <div class="voice-waves-visualizer active" id="voiceWaveVisualizer">
+          <div class="voice-wave-bar"></div>
+          <div class="voice-wave-bar"></div>
+          <div class="voice-wave-bar"></div>
+          <div class="voice-wave-bar"></div>
+          <div class="voice-wave-bar"></div>
+        </div>
+
+        <div class="font-khmer font-bold mb-2 text-primary" id="voiceStatusText">កំពុងស្តាប់សំឡេង... (សូមនិយាយបញ្ជា ឬហៅឈ្មោះសិស្ស)</div>
+        <div class="voice-live-transcript mb-3" id="voiceLiveTranscript">"..."</div>
+
+        <div class="voice-hints-list">
+          <strong class="text-primary font-khmer d-block mb-1"><i class="fa-solid fa-lightbulb"></i> គំរូពាក្យបញ្ជាសំឡេងដែលលោកគ្រូអាចសាកល្បង៖</strong>
+          <ul class="mb-0 ps-3 font-khmer text-muted">
+            <li><strong>ស្រង់វត្តមាន៖</strong> "សុខា មុនីរត្ន មក", "ចាន់ សុភ័ក្ត្រ អវត្តមាន", "គង់ រតនៈ ច្បាប់"</li>
+            <li><strong>ផ្លាស់ប្តូរផ្ទាំង៖</strong> "ទៅកាន់ វត្តមាន", "ទៅកាន់ ពិន្ទុ", "ទៅកាន់ ផ្កាយលើកទឹកចិត្ត", "ទៅកាន់ មូលនិធិ", "ទៅកាន់ កិច្ចតែងការ", "ទៅកាន់ ឯកសារ"</li>
+            <li><strong>បញ្ជាផ្សេងៗ៖</strong> "ប្តូរពណ៌", "ស្កេន QR"</li>
+          </ul>
+        </div>
+      </div>
+      <div class="modal-footer justify-content-center">
+        <button type="button" class="btn btn-outline" onclick="VoiceModule.testCommandText('សុខា មុនីរត្ន មក')">🧪 តេស្ត៖ សុខា មុនីរត្ន មក</button>
+        <button type="button" class="btn btn-primary" onclick="VoiceModule.stopListening(); closeModal('voiceHudModal');">រួចរាល់</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Toast Notification Container -->
+  <div class="toast-container" id="toastContainer"></div>
+
+  <!-- Scripts -->
+  <script src="js/data.js"></script>
+  <script src="js/storage.js"></script>
+  <script src="js/students.js"></script>
+  <script src="js/attendance.js"></script>
+  <script src="js/scanner.js"></script>
+  <script src="js/homework.js"></script>
+  <script src="js/grades.js"></script>
+  <script src="js/semester.js"></script>
+  <script src="js/reports.js"></script>
+  <script src="js/insights.js"></script>
+  <script src="js/telegram.js"></script>
+  <script src="js/timetable.js"></script>
+  <script src="js/discipline.js"></script>
+  <script src="js/seating.js"></script>
+  <script src="js/exams.js"></script>
+  <script src="js/textbooks.js"></script>
+  <script src="js/council.js"></script>
+  <script src="js/quiz.js"></script>
+  <script src="js/health.js"></script>
+  <script src="js/election.js"></script>
+  <script src="js/gamification.js"></script>
+  <script src="js/fund.js"></script>
+  <script src="js/logbook.js"></script>
+  <script src="js/resources.js"></script>
+  <script src="js/voice.js"></script>
+  <script src="js/app.js"></script>
+</body>
+</html>
